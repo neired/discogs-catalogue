@@ -11,6 +11,7 @@ class App extends React.Component {
     }
     this.getUserInput = this.getUserInput.bind(this);
     this.fetchQueryData = this.fetchQueryData.bind(this);
+    this.searchByEnter = this.searchByEnter.bind(this);
   };
 
   getUserInput(event) {
@@ -30,6 +31,11 @@ class App extends React.Component {
       console.log(this.state.data);
     });
   }
+  searchByEnter(event) {
+    if (event.key === "Enter") {
+      this.fetchQueryData();
+    }
+  }
   componentDidMount() {
   }
 
@@ -39,7 +45,7 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <label forhtml="name"></label>
-          <input className="input" type="text" name="name" placeholder="Search by artist or album" onChange={this.getUserInput} value={query}></input>
+          <input className="input" type="text" name="name" placeholder="Search by artist or album" onChange={this.getUserInput} onKeyPress={this.searchByEnter} value={query}></input>
           <button type="button" onClick={this.fetchQueryData}>Search</button>
         </header>
       </div>
