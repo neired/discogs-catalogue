@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.scss';
 import {fetchData} from './services/fetch';
 
@@ -10,11 +9,19 @@ class App extends React.Component {
       data: [],
       query: ''
     }
+    this.getUserInput = this.getUserInput.bind(this);
+    this.fetchQueryData = this.fetchQueryData.bind(this);
   };
-  
-  componentDidMount() {
-    let query = 'pompeii';
-    fetchData(query)
+
+  getUserInput(event) {
+    const query = event.currentTarget.value;
+    this.setState({
+      query : query
+    })
+  }
+
+  fetchQueryData() {
+    fetchData(this.state.query)
     .then(data => {
       console.log(data);
       this.setState({
@@ -23,24 +30,17 @@ class App extends React.Component {
       console.log(this.state.data);
     });
   }
+  componentDidMount() {
+  }
 
   render() {
-
+    const { query } = this.state;
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <label forhtml="name"></label>
+          <input className="input" type="text" name="name" placeholder="Search by artist or album" onChange={this.getUserInput} value={query}></input>
+          <button type="button" onClick={this.fetchQueryData}>Search</button>
         </header>
       </div>
     );
