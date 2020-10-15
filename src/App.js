@@ -1,13 +1,16 @@
 import React from 'react';
 import './App.scss';
-import {fetchIndividualData, options} from './services/fetch';
+import List from './components/List';
+import {fetchIndividualData, options} from './services/IndividualSearch';
+import { Route, Switch } from 'react-router-dom';
+import Detail from './pages/Detail';
 
 class App extends React.Component {
   constructor(props) {
     super(props); 
     this.state = {
       artists: [],
-      albums: [],
+      releases: [],
       query: '',
       searchBy: 'artist'
     }
@@ -40,7 +43,7 @@ class App extends React.Component {
     const responses = await Promise.all(requests);
     this.setState({
       artists: responses[0].results,
-      albums: responses[1].results
+      releases: responses[1].results
     });
   }
   fetchQueryData() {
@@ -50,12 +53,12 @@ class App extends React.Component {
         if (this.state.searchBy === 'artist') {
           this.setState({
             artists: data.results,
-            albums: []
+            releases: []
           })
         } else {
           this.setState({
             artists: [],
-            albums: data.results
+            releases: data.results
           })
         }
       });
@@ -68,38 +71,45 @@ class App extends React.Component {
       this.fetchQueryData();
     }
   }
-  componentDidMount() {
-  }
 
   render() {
-    const { query, artists, albums } = this.state;
+    const { query, artists, releases } = this.state;
     return (
       <div className="App">
         <header className="App-header">
           <p>Discogs Catalogue</p>
         </header>
         <main>
-          <label forhtml="name"></label>
-          <input className="input" type="text" name="artist" placeholder="Search by artist or album" onChange={this.getQuery} onKeyPress={this.searchByEnter} value={query}></input>
-          
-          <input type="radio" id="artist" name="search" value="artist" defaultChecked onChange={this.getSearch}></input>
-          <label htmlFor="artist">Artist</label>
-          <input type="radio" id="album" name="search" value="album" onChange={this.getSearch}></input>
-          <label htmlFor="album">Album</label>
-          <input type="radio" id="both" name="search" value="both" onChange={this.getSearch}></input>
-          <label htmlFor="both">Both</label>
+          <Switch>
+            <Route exact path="/" render={() => {
+              return (
+                <>
+                  <label forhtml="name"></label>
+                  <input className="input" type="text" name="artist" placeholder="Search by artist or album" onChange={this.getQuery} onKeyPress={this.searchByEnter} value={query}></input>
+                  
+                  <input type="radio" id="artist" name="search" value="artist" defaultChecked onChange={this.getSearch}></input>
+                  <label htmlFor="artist">Artist</label>
+                  <input type="radio" id="release" name="search" value="release" onChange={this.getSearch}></input>
+                  <label htmlFor="release">Album</label>
+                  <input type="radio" id="both" name="search" value="both" onChange={this.getSearch}></input>
+                  <label htmlFor="both">Both</label>
 
-          <button type="button" onClick={this.fetchQueryData} disabled={!query}>Search</button>
-          <ol>
-            {artists && artists.map(item => { return (
-            <li key={item.id}>{item.title}</li>
-            )})}
-          </ol>
-          <ol>
-            {albums && albums.map(item => { return (
-            <li key={item.id}>{item.title}</li>
-            )})}
-          </ol>
+                  <button type="button" onClick={this.fetchQueryData} disabled={!query}>Search</button>
+                  <List data={artists}></List>
+                  <List data={releases}></List>
+                </>
+              )
+            }} />
+            <Route path="/:detailType/:detailID" render={routerProps => {
+            return (
+              <Detail 
+                routerProps={routerProps}
+                artists={artists}
+                releases={releases}
+              />
+            );
+          }} />
+          </Switch>
         </main>
       </div>
     );
