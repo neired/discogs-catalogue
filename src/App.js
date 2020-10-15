@@ -31,7 +31,7 @@ class App extends React.Component {
     })
   }
   async fetchCombinedData(query) {
-    let ENDPOINTS = [`https://api.discogs.com/database/search?type=artist&q=${query}`, `https://api.discogs.com/database/search?type=release&q=${query}`]
+    let ENDPOINTS = [`https://api.discogs.com/database/search?type=artist&q=${query}&per_page=25`, `https://api.discogs.com/database/search?type=release&q=${query}&per_page=25`]
     let requests = ENDPOINTS.map(url => 
       fetch(url, options)
       .then(response => response.json())
