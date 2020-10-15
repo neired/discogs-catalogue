@@ -1,35 +1,67 @@
 import React from 'react';
 import './App.scss';
-import {fetchData} from './services/fetch';
+import {fetchIndividualData, options} from './services/fetch';
 
 class App extends React.Component {
   constructor(props) {
     super(props); 
     this.state = {
-      data: [],
-      query: ''
+      artists: [],
+      albums: [],
+      query: '',
+      searchBy: 'artist'
     }
-    this.getUserInput = this.getUserInput.bind(this);
+    this.getQuery = this.getQuery.bind(this);
+    this.getSearch = this.getSearch.bind(this);
     this.fetchQueryData = this.fetchQueryData.bind(this);
     this.searchByEnter = this.searchByEnter.bind(this);
+    this.fetchCombinedData = this.fetchCombinedData.bind(this);
   };
 
-  getUserInput(event) {
+  getQuery(event) {
     const query = event.currentTarget.value;
     this.setState({
       query : query
     })
   }
-
-  fetchQueryData() {
-    fetchData(this.state.query)
-    .then(data => {
-      console.log(data);
-      this.setState({
-        data: data.results
-      })
-      console.log(this.state.data);
+  getSearch(event) {
+    const search = event.currentTarget.value;
+    this.setState({
+      searchBy: search
+    })
+  }
+  async fetchCombinedData(query) {
+    let ENDPOINTS = [`https://api.discogs.com/database/search?type=artist&q=${query}`, `https://api.discogs.com/database/search?type=release&q=${query}`]
+    let requests = ENDPOINTS.map(url => 
+      fetch(url, options)
+      .then(response => response.json())
+      .catch(error =>console.log(error))
+    );
+    const responses = await Promise.all(requests);
+    this.setState({
+      artists: responses[0].results,
+      albums: responses[1].results
     });
+  }
+  fetchQueryData() {
+    if (this.state.searchBy !== 'both') {
+      fetchIndividualData(this.state.query, this.state.searchBy)
+      .then(data => {
+        if (this.state.searchBy === 'artist') {
+          this.setState({
+            artists: data.results,
+            albums: []
+          })
+        } else {
+          this.setState({
+            artists: [],
+            albums: data.results
+          })
+        }
+      });
+    } else if (this.state.searchBy === 'both') {
+      this.fetchCombinedData(this.state.query)
+    }
   }
   searchByEnter(event) {
     if (event.key === "Enter") {
@@ -40,14 +72,35 @@ class App extends React.Component {
   }
 
   render() {
-    const { query } = this.state;
+    const { query, artists, albums } = this.state;
     return (
       <div className="App">
         <header className="App-header">
-          <label forhtml="name"></label>
-          <input className="input" type="text" name="name" placeholder="Search by artist or album" onChange={this.getUserInput} onKeyPress={this.searchByEnter} value={query}></input>
-          <button type="button" onClick={this.fetchQueryData}>Search</button>
+          <p>Discogs Catalogue</p>
         </header>
+        <main>
+          <label forhtml="name"></label>
+          <input className="input" type="text" name="artist" placeholder="Search by artist or album" onChange={this.getQuery} onKeyPress={this.searchByEnter} value={query}></input>
+          
+          <input type="radio" id="artist" name="search" value="artist" defaultChecked onChange={this.getSearch}></input>
+          <label htmlFor="artist">Artist</label>
+          <input type="radio" id="album" name="search" value="album" onChange={this.getSearch}></input>
+          <label htmlFor="album">Album</label>
+          <input type="radio" id="both" name="search" value="both" onChange={this.getSearch}></input>
+          <label htmlFor="both">Both</label>
+
+          <button type="button" onClick={this.fetchQueryData} disabled={!query}>Search</button>
+          <ol>
+            {artists && artists.map(item => { return (
+            <li key={item.id}>{item.title}</li>
+            )})}
+          </ol>
+          <ol>
+            {albums && albums.map(item => { return (
+            <li key={item.id}>{item.title}</li>
+            )})}
+          </ol>
+        </main>
       </div>
     );
   }
