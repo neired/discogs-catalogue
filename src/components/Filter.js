@@ -8,10 +8,10 @@ const Filter = props => {
         <label forhtml="name">
           <Input placeholder="Search by artist or album" onKeyPress={searchByEnter} onChange={getQuery} value={query}></Input>
         </label>
-        <Radio.Group onChange={getSearch} defaultValue="artist">
+        <Radio.Group onChange={getSearch} defaultValue="both">
+          <Radio value="both">Both</Radio>
           <Radio value="artist">Artist</Radio>
           <Radio value="release">Album</Radio>
-          <Radio value="both">Both</Radio>
         </Radio.Group>
 
         <Button type="primary" disabled={!query} onClick={fetchQueryData}>Search</Button> 

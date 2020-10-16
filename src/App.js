@@ -3,9 +3,10 @@ import './App.scss';
 import List from './components/List';
 import {fetchIndividualData, options} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
-import Detail from './pages/Detail';
-import Home from './pages/Home';
+import Detail from './components/Detail';
 import Filter from './components/Filter';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
 
 class App extends React.Component {
   constructor(props) {
@@ -82,29 +83,34 @@ class App extends React.Component {
     const { query, artists, releases } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <p>Discogs Catalogue</p>
-        </header>
+        <Header></Header>
         <main>
           <Switch>
             <Route exact path="/" render={() => {
               return (
                 <>
-                  <Filter searchByEnter={this.searchByEnter} getQuery={this.getQuery} query={query} getSearch={this.getSearch} fetchQueryData={this.fetchQueryData}></Filter>
+                  <Filter 
+                    searchByEnter={this.searchByEnter} 
+                    getQuery={this.getQuery} 
+                    getSearch={this.getSearch} 
+                    fetchQueryData={this.fetchQueryData}
+                    query={query} 
+                  ></Filter>
                   <List data={artists}></List>
                   <List data={releases}></List>
                 </>
               )
             }} />
             <Route path="/:detailType/:detailID" render={routerProps => {
-            return (
-              <Detail 
-                routerProps={routerProps}
-              />
-            );
-          }} />
+              return (
+                <Detail 
+                  routerProps={routerProps}
+                />
+              );
+            }} />
           </Switch>
         </main>
+        <Footer></Footer>
       </div>
     );
   }

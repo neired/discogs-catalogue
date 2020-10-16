@@ -1,6 +1,6 @@
 import React from 'react';
 import {options} from '../services/IndividualSearch';
-import { Card } from 'antd';
+import { Card, Breadcrumb } from 'antd';
 
 class Detail extends React.Component {
   constructor(props) {
@@ -14,8 +14,11 @@ class Detail extends React.Component {
     const {routerProps} = this.props;
     const detailID = parseInt(routerProps.match.params.detailID);
     const detailType = routerProps.match.params.detailType;
-  
-    const url = `https://api.discogs.com/${detailType}s/${detailID}`;
+    this.fetchDetail(detailType, detailID);
+  }
+
+  fetchDetail(type, id) {
+    const url = `https://api.discogs.com/${type}s/${id}`;
     fetch(url, options)
       .then(res => res.json())
       .catch(error => console.log('Oops!', error))
@@ -23,14 +26,21 @@ class Detail extends React.Component {
         this.setState({ item: data })
       })
   }
-  
+
   render() {
     const {item} = this.state;
       return (
-        <Card hoverable>
-          <p>{item.name}</p>
-          <p>{item.title}</p>
-        </Card>
+        <>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <a href="/">Home</a>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>{item.name || item.title}</Breadcrumb.Item>
+          </Breadcrumb>
+          <Card hoverable>
+            <p>{item.name || item.title}</p>
+          </Card>
+        </>
       )
   }
 }
