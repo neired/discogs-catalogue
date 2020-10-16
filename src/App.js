@@ -15,16 +15,21 @@ class App extends React.Component {
     this.state = {
       artists: [],
       releases: [],
+      artistsPag : {},
+      releasesPag: {},
       query: '',
-      searchBy: 'artist'
+      searchBy: 'both'
     }
     this.getQuery = this.getQuery.bind(this);
     this.getSearch = this.getSearch.bind(this);
     this.fetchQueryData = this.fetchQueryData.bind(this);
     this.searchByEnter = this.searchByEnter.bind(this);
     this.fetchCombinedData = this.fetchCombinedData.bind(this);
+    this.changePage = this.changePage.bind(this);
   };
-
+  componentDidMount() {
+    console.log(this.state);
+  }
   getQuery(event) {
     const query = event.currentTarget.value;
     this.setState({
@@ -45,11 +50,13 @@ class App extends React.Component {
       .catch(error =>console.log(error))
     );
     const responses = await Promise.all(requests);
-    console.log(responses);
     this.setState({
       artists: responses[0].results,
-      releases: responses[1].results
+      releases: responses[1].results,
+      artistsPag: responses[0].pagination,
+      releasesPag: responses[1].pagination
     });
+    console.log('pagination', this.state.artistsPag, this.state.releasesPag);
   }
   fetchQueryData() {
     if (this.state.searchBy !== 'both') {
@@ -58,15 +65,19 @@ class App extends React.Component {
         if (this.state.searchBy === 'artist') {
           this.setState({
             artists: data.results,
-            releases: []
+            releases: [],
+            artistsPag: data.pagination,
+            releasesPag: {}
           });
-          console.log(this.state.artists);
+          console.log(this.state.artistsPag);
         } else {
           this.setState({
             artists: [],
-            releases: data.results
+            releases: data.results,
+            artistsPag: {},
+            releasesPag: data.pagination
           });
-          console.log(this.state.releases);
+          console.log(this.state.releasesPag);
         }
       });
     } else if (this.state.searchBy === 'both') {
@@ -78,9 +89,35 @@ class App extends React.Component {
       this.fetchQueryData();
     }
   }
-
+  changePage(page, pageSize) {
+    console.log(page, pageSize);
+    const url = `https://api.discogs.com/database/search?type=${this.state.searchBy}&q=${this.state.query}&per_page=${pageSize}&page=${page}`;
+    console.log(url);
+    fetch(url, options)
+      .then(res => res.json())
+      .catch(error => console.log('Oops!', error))
+      .then(data => {
+        if (this.state.searchBy === 'artist') {
+          this.setState({
+            artists: data.results,
+            releases: [],
+            artistsPag: data.pagination,
+            releasesPag: {}
+          });
+          console.log(this.state.artistsPag);
+        } else {
+          this.setState({
+            artists: [],
+            releases: data.results,
+            artistsPag: {},
+            releasesPag: data.pagination
+          });
+          console.log(this.state.releasesPag);
+        }
+      })
+  }
   render() {
-    const { query, artists, releases } = this.state;
+    const { query, artists, releases, artistsPag, releasesPag } = this.state;
     return (
       <div className="App">
         <Header></Header>
@@ -96,8 +133,8 @@ class App extends React.Component {
                     fetchQueryData={this.fetchQueryData}
                     query={query} 
                   ></Filter>
-                  <List data={artists}></List>
-                  <List data={releases}></List>
+                  <List data={artists} pagination={artistsPag} changePage={this.changePage}></List>
+                  <List data={releases} pagination={releasesPag} changePage={this.changePage}></List>
                 </>
               )
             }} />

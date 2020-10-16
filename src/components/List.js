@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Image, Card } from 'antd';
+import { Row, Col, Image, Card, Pagination } from 'antd';
 
 const List = props => {
-  const {data} = props;
+  const {data, pagination, changePage} = props;
     return (
+      <>
       <Row gutter={[32, 32]}>
           {data.map(item => { 
             return (
@@ -21,6 +22,8 @@ const List = props => {
             )
           })}
       </Row>
+      <Pagination showSizeChanger={false} defaultCurrent={pagination.page} total={pagination.pages} onChange={changePage} pageSize={25}/>
+      </>
     )
 }
 
