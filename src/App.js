@@ -4,7 +4,7 @@ import List from './components/List';
 import {fetchIndividualData, options} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
-import Filter from './components/Filter';
+import Filter from './components/Filter/Filter';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 
@@ -16,7 +16,7 @@ class App extends React.Component {
       artists: [],
       releases: [],
       query: '',
-      searchBy: 'artist'
+      searchBy: 'both'
     }
     this.getQuery = this.getQuery.bind(this);
     this.getSearch = this.getSearch.bind(this);
