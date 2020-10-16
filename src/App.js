@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.scss';
-import { Button, Input, Radio } from 'antd';
 import List from './components/List';
 import {fetchIndividualData, options} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './pages/Detail';
+import Home from './pages/Home';
+import Filter from './components/Filter';
 
 class App extends React.Component {
   constructor(props) {
@@ -88,16 +89,7 @@ class App extends React.Component {
             <Route exact path="/" render={() => {
               return (
                 <>
-                  <label forhtml="name">
-                    <Input placeholder="Search by artist or album" onKeyPress={this.searchByEnter} onChange={this.getQuery} value={query}></Input>
-                  </label>
-                  <Radio.Group onChange={this.getSearch} defaultValue="artist">
-                    <Radio value="artist">Artist</Radio>
-                    <Radio value="release">Album</Radio>
-                    <Radio value="both">Both</Radio>
-                  </Radio.Group>
-
-                  <Button ref={this.ref} type="primary" disabled={!query} onClick={this.fetchQueryData}>Search</Button>
+                  <Filter searchByEnter={this.searchByEnter} getQuery={this.getQuery} query={query} getSearch={this.getSearch} fetchQueryData={this.fetchQueryData}></Filter>
                   <List data={artists}></List>
                   <List data={releases}></List>
                 </>

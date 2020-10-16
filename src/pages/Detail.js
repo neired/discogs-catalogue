@@ -1,5 +1,6 @@
 import React from 'react';
 import {options} from '../services/IndividualSearch';
+import { Card } from 'antd';
 
 class Detail extends React.Component {
   constructor(props) {
@@ -27,16 +28,17 @@ class Detail extends React.Component {
       this.setState({
         item: data
       })
+      console.log(this.state.item)
     })
   }
   
   render() {
     const {item} = this.state;
       return (
-        <>
+        <Card hoverable>
           <p>{item.name}</p>
           <p>{item.title}</p>
-        </>
+        </Card>
       )
   }
 }
