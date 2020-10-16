@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.scss';
-import List from './components/List';
+import ReleaseList from './components/ReleaseList';
+import ArtistList from './components/ArtistList';
 import {fetchIndividualData, options} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
@@ -18,17 +19,20 @@ class App extends React.Component {
       artistsPag : {},
       releasesPag: {},
       query: '',
-      searchBy: 'both'
+      searchBy: 'both',
+      isArtist: false,
+      isRelease: false
     }
     this.getQuery = this.getQuery.bind(this);
     this.getSearch = this.getSearch.bind(this);
     this.fetchQueryData = this.fetchQueryData.bind(this);
     this.searchByEnter = this.searchByEnter.bind(this);
     this.fetchCombinedData = this.fetchCombinedData.bind(this);
-    this.changePage = this.changePage.bind(this);
+    this.changeArtistPage = this.changeArtistPage.bind(this);
+    this.changeReleasePage = this.changeReleasePage.bind(this);
   };
   componentDidMount() {
-    console.log(this.state);
+    console.log('STATE', this.state);
   }
   getQuery(event) {
     const query = event.currentTarget.value;
@@ -51,6 +55,8 @@ class App extends React.Component {
     );
     const responses = await Promise.all(requests);
     this.setState({
+      isArtist: true,
+      isRelease: true,
       artists: responses[0].results,
       releases: responses[1].results,
       artistsPag: responses[0].pagination,
@@ -64,6 +70,8 @@ class App extends React.Component {
       .then(data => {
         if (this.state.searchBy === 'artist') {
           this.setState({
+            isArtist: true,
+            isRelease: false,
             artists: data.results,
             releases: [],
             artistsPag: data.pagination,
@@ -72,6 +80,8 @@ class App extends React.Component {
           console.log(this.state.artistsPag);
         } else {
           this.setState({
+            isRelease: true,
+            isArtist: false,
             artists: [],
             releases: data.results,
             artistsPag: {},
@@ -89,35 +99,59 @@ class App extends React.Component {
       this.fetchQueryData();
     }
   }
-  changePage(page, pageSize) {
-    console.log(page, pageSize);
-    const url = `https://api.discogs.com/database/search?type=${this.state.searchBy}&q=${this.state.query}&per_page=${pageSize}&page=${page}`;
-    console.log(url);
+  // changePage(page, pageSize) {
+  //   console.log(page, pageSize);
+  //   const url = `https://api.discogs.com/database/search?type=${this.state.searchBy}&q=${this.state.query}&per_page=${pageSize}&page=${page}`;
+  //   fetch(url, options)
+  //     .then(res => res.json())
+  //     .catch(error => console.log('Oops!', error))
+  //     .then(data => {
+  //       if (this.state.searchBy === 'artist') {
+  //         this.setState({
+  //           isArtist: true,
+  //           artists: data.results,
+  //           artistsPag: data.pagination,
+  //         });
+  //       } else {
+  //         this.setState({
+  //           isRelease: true,
+  //           releases: data.results,
+  //           releasesPag: data.pagination
+  //         });
+  //       }
+  //     })
+  // }
+  changeArtistPage(page, pageSize) {
+    const url = `https://api.discogs.com/database/search?type=artist&q=${this.state.query}&per_page=${pageSize}&page=${page}`;
     fetch(url, options)
       .then(res => res.json())
       .catch(error => console.log('Oops!', error))
       .then(data => {
-        if (this.state.searchBy === 'artist') {
           this.setState({
+            isArtist: true,
             artists: data.results,
-            releases: [],
             artistsPag: data.pagination,
-            releasesPag: {}
           });
-          console.log(this.state.artistsPag);
-        } else {
+          console.log('in App', page, this.state.artistsPag.page, this.state.artistsPag.pages);
+      })
+  }
+  changeReleasePage(page, pageSize) {
+    console.log('holi');
+    const url = `https://api.discogs.com/database/search?type=release&q=${this.state.query}&per_page=${pageSize}&page=${page}`;
+    fetch(url, options)
+      .then(res => res.json())
+      .catch(error => console.log('Oops!', error))
+      .then(data => {
           this.setState({
-            artists: [],
+            isRelease: true,
             releases: data.results,
-            artistsPag: {},
-            releasesPag: data.pagination
+            releasesPag: data.pagination,
           });
           console.log(this.state.releasesPag);
-        }
       })
   }
   render() {
-    const { query, artists, releases, artistsPag, releasesPag } = this.state;
+    const { query, artists, releases, artistsPag, releasesPag, isArtist, isRelease } = this.state;
     return (
       <div className="App">
         <Header></Header>
@@ -133,8 +167,8 @@ class App extends React.Component {
                     fetchQueryData={this.fetchQueryData}
                     query={query} 
                   ></Filter>
-                  <List data={artists} pagination={artistsPag} changePage={this.changePage}></List>
-                  <List data={releases} pagination={releasesPag} changePage={this.changePage}></List>
+                  {isArtist && <ArtistList isArtist={isArtist} data={artists} pagination={artistsPag} changeArtistPage={this.changeArtistPage}></ArtistList>}
+                  {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage}></ReleaseList>}
                 </>
               )
             }} />
@@ -142,6 +176,8 @@ class App extends React.Component {
               return (
                 <Detail 
                   routerProps={routerProps}
+                  isArtist={isArtist}
+                  isRelease={isRelease}
                 />
               );
             }} />
