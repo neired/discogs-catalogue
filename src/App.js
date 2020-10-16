@@ -44,6 +44,7 @@ class App extends React.Component {
       .catch(error =>console.log(error))
     );
     const responses = await Promise.all(requests);
+    console.log(responses);
     this.setState({
       artists: responses[0].results,
       releases: responses[1].results
@@ -99,8 +100,6 @@ class App extends React.Component {
             return (
               <Detail 
                 routerProps={routerProps}
-                artists={artists}
-                releases={releases}
               />
             );
           }} />
