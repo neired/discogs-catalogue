@@ -35,6 +35,7 @@ class Detail extends React.Component {
       return (
         <>
           <p>{item.name}</p>
+          <p>{item.title}</p>
         </>
       )
   }

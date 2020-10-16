@@ -31,7 +31,6 @@ class App extends React.Component {
   }
   getSearch(event) {
     const search = event.target.value;
-    console.log(search);
     this.setState({
       searchBy: search
     })
@@ -57,12 +56,14 @@ class App extends React.Component {
           this.setState({
             artists: data.results,
             releases: []
-          })
+          });
+          console.log(this.state.artists);
         } else {
           this.setState({
             artists: [],
             releases: data.results
-          })
+          });
+          console.log(this.state.releases);
         }
       });
     } else if (this.state.searchBy === 'both') {
