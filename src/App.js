@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.scss';
+import { Button, Input, Radio } from 'antd';
 import List from './components/List';
 import {fetchIndividualData, options} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
@@ -8,6 +9,7 @@ import Detail from './pages/Detail';
 class App extends React.Component {
   constructor(props) {
     super(props); 
+    this.ref = React.createRef();
     this.state = {
       artists: [],
       releases: [],
@@ -28,7 +30,8 @@ class App extends React.Component {
     })
   }
   getSearch(event) {
-    const search = event.currentTarget.value;
+    const search = event.target.value;
+    console.log(search);
     this.setState({
       searchBy: search
     })
@@ -84,17 +87,16 @@ class App extends React.Component {
             <Route exact path="/" render={() => {
               return (
                 <>
-                  <label forhtml="name"></label>
-                  <input className="input" type="text" name="artist" placeholder="Search by artist or album" onChange={this.getQuery} onKeyPress={this.searchByEnter} value={query}></input>
-                  
-                  <input type="radio" id="artist" name="search" value="artist" defaultChecked onChange={this.getSearch}></input>
-                  <label htmlFor="artist">Artist</label>
-                  <input type="radio" id="release" name="search" value="release" onChange={this.getSearch}></input>
-                  <label htmlFor="release">Album</label>
-                  <input type="radio" id="both" name="search" value="both" onChange={this.getSearch}></input>
-                  <label htmlFor="both">Both</label>
+                  <label forhtml="name">
+                    <Input placeholder="Search by artist or album" onKeyPress={this.searchByEnter} onChange={this.getQuery} value={query}></Input>
+                  </label>
+                  <Radio.Group onChange={this.getSearch} defaultValue="artist">
+                    <Radio value="artist">Artist</Radio>
+                    <Radio value="release">Album</Radio>
+                    <Radio value="both">Both</Radio>
+                  </Radio.Group>
 
-                  <button type="button" onClick={this.fetchQueryData} disabled={!query}>Search</button>
+                  <Button ref={this.ref} type="primary" disabled={!query} onClick={this.fetchQueryData}>Search</Button>
                   <List data={artists}></List>
                   <List data={releases}></List>
                 </>
