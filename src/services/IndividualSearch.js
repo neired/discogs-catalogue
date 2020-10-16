@@ -9,7 +9,7 @@ export const options = {
 };
 
 export const fetchIndividualData = async (query, search) => {
-  const ENDPOINT = `https://api.discogs.com/database/search?type=${search}&q=${query}`;
+  const ENDPOINT = `https://api.discogs.com/database/search?type=${search}&q=${query}&per_page=25`;
   try {
     const res = await fetch(ENDPOINT, options);
     return await res.json();
