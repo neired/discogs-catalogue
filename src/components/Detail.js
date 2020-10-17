@@ -13,7 +13,7 @@ class Detail extends React.Component {
   componentDidMount() {
     const {routerProps} = this.props;
     const detailID = parseInt(routerProps.match.params.detailID);
-    const detailType = routerProps.match.params.detailType;
+    const detailType = routerProps.match.params.detailType || 'release';
     this.fetchDetail(detailType, detailID);
   }
 
