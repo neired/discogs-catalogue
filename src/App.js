@@ -2,7 +2,7 @@ import React from 'react';
 import './App.scss';
 import ReleaseList from './components/ReleaseList';
 import ArtistList from './components/ArtistList';
-import {fetchIndividualData, options, fetchCollection} from './services/IndividualSearch';
+import {fetchIndividualData, options, fetchCollection, postRelease} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
 import Filter from './components/Filter/Filter';
@@ -33,15 +33,17 @@ class App extends React.Component {
     this.fetchCombinedData = this.fetchCombinedData.bind(this);
     this.changeArtistPage = this.changeArtistPage.bind(this);
     this.changeReleasePage = this.changeReleasePage.bind(this);
+    this.changeCollectionPage = this.changeCollectionPage.bind(this);
+    this.addToCollection = this.addToCollection.bind(this);
   };
   componentDidMount() {
     console.log('STATE', this.state);
     fetchCollection()
     .then(data => {
-        this.setState({
-          collection: data.releases,
-          collectionPag: data.pagination
-        });
+      this.setState({
+        collection: data.releases,
+        collectionPag: data.pagination
+      });
     })
   }
   getQuery(event) {
@@ -165,6 +167,17 @@ class App extends React.Component {
           });
       })
   }
+
+  addToCollection(id) {
+    postRelease(id)
+    fetchCollection()
+    .then(data => {
+      this.setState({
+        collection: data.releases,
+        collectionPag: data.pagination
+      });
+    })
+  }
   render() {
     const { query, artists, releases, artistsPag, releasesPag, isArtist, isRelease, collection, collectionPag } = this.state;
     return (
@@ -183,7 +196,7 @@ class App extends React.Component {
                     query={query} 
                   ></Filter>
                   {isArtist && <ArtistList isArtist={isArtist} data={artists} pagination={artistsPag} changeArtistPage={this.changeArtistPage}></ArtistList>}
-                  {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage}></ReleaseList>}
+                  {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage} addToCollection={this.addToCollection}></ReleaseList>}
                   <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
                 </>
               )
