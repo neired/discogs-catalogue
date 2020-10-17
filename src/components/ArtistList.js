@@ -22,7 +22,7 @@ const List = props => {
             )
           })}
       </Row>
-      <Pagination showSizeChanger={false} current={pagination.page} total={pagination.items} onChange={changeArtistPage} pageSize={25}/>
+      {pagination.pages !== 1 ? <Pagination showSizeChanger={false} current={pagination.page} total={pagination.items} onChange={changeArtistPage} pageSize={25}/> : ''}
       </>
     )
 }
