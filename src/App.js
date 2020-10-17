@@ -2,12 +2,13 @@ import React from 'react';
 import './App.scss';
 import ReleaseList from './components/ReleaseList';
 import ArtistList from './components/ArtistList';
-import {fetchIndividualData, options} from './services/IndividualSearch';
+import {fetchIndividualData, options, fetchCollection} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
 import Filter from './components/Filter/Filter';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
+import Collection from './components/Collection';
 
 class App extends React.Component {
   constructor(props) {
@@ -16,8 +17,10 @@ class App extends React.Component {
     this.state = {
       artists: [],
       releases: [],
+      collection: [],
       artistsPag : {},
       releasesPag: {},
+      collectionPag: {},
       query: '',
       searchBy: 'both',
       isArtist: false,
@@ -33,6 +36,13 @@ class App extends React.Component {
   };
   componentDidMount() {
     console.log('STATE', this.state);
+    fetchCollection()
+    .then(data => {
+        this.setState({
+          collection: data.releases,
+          collectionPag: data.pagination
+        });
+    })
   }
   getQuery(event) {
     const query = event.currentTarget.value;
@@ -62,7 +72,6 @@ class App extends React.Component {
       artistsPag: responses[0].pagination,
       releasesPag: responses[1].pagination
     });
-    console.log('pagination', this.state.artistsPag, this.state.releasesPag);
   }
   fetchQueryData() {
     if (this.state.searchBy !== 'both') {
@@ -77,7 +86,6 @@ class App extends React.Component {
             artistsPag: data.pagination,
             releasesPag: {}
           });
-          console.log(this.state.artistsPag);
         } else {
           this.setState({
             isRelease: true,
@@ -87,7 +95,6 @@ class App extends React.Component {
             artistsPag: {},
             releasesPag: data.pagination
           });
-          console.log(this.state.releasesPag);
         }
       });
     } else if (this.state.searchBy === 'both') {
@@ -100,7 +107,6 @@ class App extends React.Component {
     }
   }
   // changePage(page, pageSize) {
-  //   console.log(page, pageSize);
   //   const url = `https://api.discogs.com/database/search?type=${this.state.searchBy}&q=${this.state.query}&per_page=${pageSize}&page=${page}`;
   //   fetch(url, options)
   //     .then(res => res.json())
@@ -127,16 +133,14 @@ class App extends React.Component {
       .then(res => res.json())
       .catch(error => console.log('Oops!', error))
       .then(data => {
-          this.setState({
-            isArtist: true,
-            artists: data.results,
-            artistsPag: data.pagination,
-          });
-          console.log('in App', page, this.state.artistsPag.page, this.state.artistsPag.pages);
+        this.setState({
+          isArtist: true,
+          artists: data.results,
+          artistsPag: data.pagination,
+        });
       })
   }
   changeReleasePage(page, pageSize) {
-    console.log('holi');
     const url = `https://api.discogs.com/database/search?type=release&q=${this.state.query}&per_page=${pageSize}&page=${page}`;
     fetch(url, options)
       .then(res => res.json())
@@ -147,11 +151,22 @@ class App extends React.Component {
             releases: data.results,
             releasesPag: data.pagination,
           });
-          console.log(this.state.releasesPag);
+      })
+  }
+  changeCollectionPage(page, pageSize) {
+    const url = `https://api.discogs.com/users/neired/collection/folders/0/releases&per_page=${pageSize}&page=${page}`;
+    fetch(url, options)
+      .then(res => res.json())
+      .catch(error => console.log('Oops!', error))
+      .then(data => {
+          this.setState({
+            collection: data.results,
+            collectionPag: data.pagination,
+          });
       })
   }
   render() {
-    const { query, artists, releases, artistsPag, releasesPag, isArtist, isRelease } = this.state;
+    const { query, artists, releases, artistsPag, releasesPag, isArtist, isRelease, collection, collectionPag } = this.state;
     return (
       <div className="App">
         <Header></Header>
@@ -169,6 +184,7 @@ class App extends React.Component {
                   ></Filter>
                   {isArtist && <ArtistList isArtist={isArtist} data={artists} pagination={artistsPag} changeArtistPage={this.changeArtistPage}></ArtistList>}
                   {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage}></ReleaseList>}
+                  <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
                 </>
               )
             }} />

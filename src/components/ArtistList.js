@@ -4,7 +4,6 @@ import { Row, Col, Image, Card, Pagination } from 'antd';
 
 const List = props => {
   const { data, pagination, changeArtistPage } = props;
-  console.log('artistList', pagination.page, pagination.pages);
     return (
       <>
       <h2>Artists</h2>

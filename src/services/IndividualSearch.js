@@ -17,3 +17,13 @@ export const fetchIndividualData = async (query, search) => {
     return console.log('Looks like there was a problem!', error);
   }
 }
+
+export const fetchCollection = async () => {
+  const ENDPOINT = "https://api.discogs.com/users/neired/collection/folders/0/releases";
+  try {
+    const res = await fetch(ENDPOINT, options);
+    return await res.json();
+  } catch (error) {
+    return console.log('Looks like there was a problem!', error);
+  }
+}
