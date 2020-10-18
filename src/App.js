@@ -22,15 +22,26 @@ class App extends React.Component {
       releasesPag: {},
       collectionPag: {},
       query: '',
-      searchBy: 'both',
+      searchBy: ['artist', 'release'],
       isArtist: false,
       isRelease: false
     }
+    this.searchModes = [
+      {
+        label: 'Both',
+        value: 'artist, release'
+      }, {
+        label: 'Artist',
+        value: 'artist,'
+      }, {
+        label: 'Album',
+        value: ',release'
+      }
+    ]
     this.getQuery = this.getQuery.bind(this);
     this.getSearch = this.getSearch.bind(this);
     this.fetchQueryData = this.fetchQueryData.bind(this);
     this.searchByEnter = this.searchByEnter.bind(this);
-    this.fetchCombinedData = this.fetchCombinedData.bind(this);
     this.changeArtistPage = this.changeArtistPage.bind(this);
     this.changeReleasePage = this.changeReleasePage.bind(this);
     this.changeCollectionPage = this.changeCollectionPage.bind(this);
@@ -54,54 +65,38 @@ class App extends React.Component {
   }
   getSearch(event) {
     const search = event.target.value;
+    const searchArr = search.split(',');
     this.setState({
-      searchBy: search
+      searchBy: searchArr
     })
   }
-  async fetchCombinedData(query) {
-    let ENDPOINTS = [`https://api.discogs.com/database/search?type=artist&q=${query}&per_page=25`, `https://api.discogs.com/database/search?type=release&q=${query}&per_page=25`]
-    let requests = ENDPOINTS.map(url => 
-      fetch(url, options)
-      .then(response => response.json())
-      .catch(error =>console.log(error))
-    );
-    const responses = await Promise.all(requests);
-    this.setState({
-      isArtist: true,
-      isRelease: true,
-      artists: responses[0].results,
-      releases: responses[1].results,
-      artistsPag: responses[0].pagination,
-      releasesPag: responses[1].pagination
-    });
-  }
   fetchQueryData() {
-    if (this.state.searchBy !== 'both') {
-      fetchIndividualData(this.state.query, this.state.searchBy)
-      .then(data => {
-        if (this.state.searchBy === 'artist') {
-          this.setState({
-            isArtist: true,
-            isRelease: false,
-            artists: data.results,
-            releases: [],
-            artistsPag: data.pagination,
-            releasesPag: {}
-          });
-        } else {
-          this.setState({
-            isRelease: true,
-            isArtist: false,
-            artists: [],
-            releases: data.results,
-            artistsPag: {},
-            releasesPag: data.pagination
-          });
-        }
-      });
-    } else if (this.state.searchBy === 'both') {
-      this.fetchCombinedData(this.state.query)
-    }
+    this.setState({
+      releases: [],
+      releasesPag: {},
+      artists: [],
+      artistsPag: {},
+      isRelease: false,
+      isArtist: false,
+    })
+
+    const requests = this.state.searchBy.map(type => type ? fetchIndividualData(this.state.query, type) : Promise.resolve(null))
+    Promise.all(requests).then(responses => {
+      if(responses[0]) {
+        this.setState({
+          isArtist: true,
+          artists: responses[0].results,
+          artistsPag: responses[0].pagination,
+        })
+      }
+      if(responses[1]) {
+        this.setState({
+          isRelease: true,
+          releases: responses[1].results,
+          releasesPag: responses[1].pagination
+        });
+      }
+    })
   }
   searchByEnter(event) {
     if (event.key === "Enter") {
@@ -170,12 +165,14 @@ class App extends React.Component {
 
   addToCollection(id) {
     postRelease(id)
-    fetchCollection()
-    .then(data => {
-      this.setState({
-        collection: data.releases,
-        collectionPag: data.pagination
-      });
+    .then(data =>
+      {fetchCollection()
+      .then(data => {
+        this.setState({
+          collection: data.releases,
+          collectionPag: data.pagination
+        });
+      })
     })
   }
   render() {
@@ -193,7 +190,8 @@ class App extends React.Component {
                     getQuery={this.getQuery} 
                     getSearch={this.getSearch} 
                     fetchQueryData={this.fetchQueryData}
-                    query={query} 
+                    query={query}
+                    searchModes={this.searchModes}
                   ></Filter>
                   {isArtist && <ArtistList isArtist={isArtist} data={artists} pagination={artistsPag} changeArtistPage={this.changeArtistPage}></ArtistList>}
                   {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage} addToCollection={this.addToCollection}></ReleaseList>}
