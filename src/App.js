@@ -22,7 +22,7 @@ class App extends React.Component {
       releasesPag: {},
       collectionPag: {},
       query: '',
-      searchBy: 'both',
+      searchBy: ['artist', 'release'],
       isArtist: false,
       isRelease: false
     }
@@ -70,7 +70,6 @@ class App extends React.Component {
       searchBy: searchArr
     })
   }
-
   fetchQueryData() {
     this.setState({
       releases: [],
@@ -166,12 +165,14 @@ class App extends React.Component {
 
   addToCollection(id) {
     postRelease(id)
-    fetchCollection()
-    .then(data => {
-      this.setState({
-        collection: data.releases,
-        collectionPag: data.pagination
-      });
+    .then(data =>
+      {fetchCollection()
+      .then(data => {
+        this.setState({
+          collection: data.releases,
+          collectionPag: data.pagination
+        });
+      })
     })
   }
   render() {

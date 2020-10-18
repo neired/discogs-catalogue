@@ -31,7 +31,7 @@ export const fetchCollection = async () => {
     const res = await fetch(ENDPOINT, options);
     return res.json();
   } catch (error) {
-    return console.log('Looks like we coudnt retrieve your collection!', error);
+    return console.log(`Looks like we couldn't retrieve your collection!`, error);
   }
 }
 
@@ -41,6 +41,6 @@ export const postRelease = async (id) => {
     const res = await fetch(ENDPOINT, optionsPost);
     return res.json();
   } catch (error) {
-    return console.log('We couldnt add that item to your collection!', error);
+    return console.log(`We couldn't add that item to your collection!`, error);
   }
 }
