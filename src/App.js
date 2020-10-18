@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.scss';
+import './App.less';
 import ReleaseList from './components/ReleaseList';
 import ArtistList from './components/ArtistList';
 import {fetchIndividualData, options, fetchCollection, postRelease} from './services/IndividualSearch';
