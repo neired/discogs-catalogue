@@ -1,6 +1,6 @@
 import React from 'react';
 import {options} from '../services/IndividualSearch';
-import { Card, Breadcrumb, Image } from 'antd';
+import { Card, Breadcrumb, Image, Typography } from 'antd';
 
 class Detail extends React.Component {
   constructor(props) {
@@ -28,7 +28,8 @@ class Detail extends React.Component {
   }
 
   render() {
-    const {item} = this.state;
+    const { item } = this.state;
+    const { Title, Text, Paragraph } = Typography;
       return (
         <>
           <Breadcrumb>
@@ -37,17 +38,17 @@ class Detail extends React.Component {
             </Breadcrumb.Item>
             <Breadcrumb.Item>{item.name || item.title}</Breadcrumb.Item>
           </Breadcrumb>
-          <Card hoverable>
+          <Card>
           <Image width={150} src={item.images && item.images[0].resource_url} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"></Image>
-            <p>{item.name || item.title}</p>
+            <Title level={2}>{item.name || item.title}</Title>
             {item.artists && item.artists.map((artist) => { return ( 
-              <p key={artist.id}>{artist.name}</p>
+              <Title level={3} key={artist.id}>{artist.name}</Title>
             )})}
-            {item.namevariations && <p>Also known as: {item.namevariations}</p>}
-            <p>{item.year}</p>
-            <p>{item.profile || item.notes}</p>
-            {item.styles && <p>Styles: {item.styles}</p>}
-            {item.genres && <p>Genres: {item.genres}</p>}
+            {item.namevariations && <Text>Also known as: {item.namevariations}</Text>}
+            <Text>{item.year}</Text>
+            <Paragraph ellipsis={{ rows: 3, expandable: true, symbol: 'more' }}>{item.profile || item.notes}</Paragraph>
+            {item.styles && <Text>Styles: {item.styles}</Text>}
+            {item.genres && <Text>Genres: {item.genres}</Text>}
             {item.tracklist &&<ol>Tracklist:
               {item.tracklist && item.tracklist.map((track) => { return (
                 <li key={track.position}><span>{track.title}</span><span>{track.duration}</span></li>
@@ -57,9 +58,9 @@ class Detail extends React.Component {
               {item.members && item.members.map((member) => { return (
                 <li key={member.id}>
                   <Image width={50} src={member.thumbnail_url} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"></Image>
-                  <p>{member.name}</p>
-                  </li>
-              )})}
+                  <Text>{member.name}</Text>
+                </li>
+            )})}
             </ol>}
           </Card>
         </>

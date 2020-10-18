@@ -1,14 +1,15 @@
 import React from 'react';
 import './App.less';
+import { Layout, Typography } from 'antd';
 import ReleaseList from './components/ReleaseList';
 import ArtistList from './components/ArtistList';
 import {fetchIndividualData, options, fetchCollection, postRelease} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
 import Filter from './components/Filter/Filter';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-import Collection from './components/Collection';
+// import Header from './components/Header/Header';
+// import Footer from './components/Footer/Footer';
+import Collection from './components/Collection/Collection';
 
 class App extends React.Component {
   constructor(props) {
@@ -165,54 +166,61 @@ class App extends React.Component {
 
   addToCollection(id) {
     postRelease(id)
-    .then(data =>
-      {fetchCollection()
-      .then(data => {
-        this.setState({
-          collection: data.releases,
-          collectionPag: data.pagination
-        });
-      })
+    fetchCollection()
+    .then(data => {
+      this.setState({
+        collection: data.releases,
+        collectionPag: data.pagination
+      });
     })
   }
   render() {
     const { query, artists, releases, artistsPag, releasesPag, isArtist, isRelease, collection, collectionPag } = this.state;
+    const { Header, Footer, Content } = Layout;
+    const { Title, Text } = Typography;
     return (
-      <div className="App">
-        <Header></Header>
-        <main>
-          <Switch>
-            <Route exact path="/" render={() => {
-              return (
-                <>
-                  <Filter 
-                    searchByEnter={this.searchByEnter} 
-                    getQuery={this.getQuery} 
-                    getSearch={this.getSearch} 
-                    fetchQueryData={this.fetchQueryData}
-                    query={query}
-                    searchModes={this.searchModes}
-                  ></Filter>
-                  {isArtist && <ArtistList isArtist={isArtist} data={artists} pagination={artistsPag} changeArtistPage={this.changeArtistPage}></ArtistList>}
-                  {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage} addToCollection={this.addToCollection}></ReleaseList>}
-                  <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
-                </>
-              )
-            }} />
-            <Route path="/:detailType/:detailID" render={routerProps => {
-              return (
-                <Detail 
-                  routerProps={routerProps}
-                  isArtist={isArtist}
-                  isRelease={isRelease}
-                />
-              );
-            }} />
-          </Switch>
-        </main>
-        <Footer></Footer>
-      </div>
-    );
+      // <div className="App">
+        <Layout className="App">
+          <Header className="App-header">
+            <Title level={1}>Discogs Catalogue</Title>
+          </Header>
+          <Content>
+            <main>
+              <Switch>
+                <Route exact path="/" render={() => {
+                  return (
+                    <>
+                      <Filter 
+                        searchByEnter={this.searchByEnter} 
+                        getQuery={this.getQuery} 
+                        getSearch={this.getSearch} 
+                        fetchQueryData={this.fetchQueryData}
+                        query={query}
+                        searchModes={this.searchModes}
+                      ></Filter>
+                      {isArtist && <ArtistList isArtist={isArtist} data={artists} pagination={artistsPag} changeArtistPage={this.changeArtistPage}></ArtistList>}
+                      {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage} addToCollection={this.addToCollection}></ReleaseList>}
+                      <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
+                    </>
+                  )
+                }} />
+                <Route path="/:detailType/:detailID" render={routerProps => {
+                  return (
+                    <Detail 
+                      routerProps={routerProps}
+                      isArtist={isArtist}
+                      isRelease={isRelease}
+                    />
+                  );
+                }} />
+              </Switch>
+            </main>
+          </Content>
+          <Footer className="App-footer">
+            <Text>Made with love</Text>
+          </Footer>
+        </Layout>
+    )
   }
 }
 
