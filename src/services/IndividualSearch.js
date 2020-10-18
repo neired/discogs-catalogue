@@ -15,8 +15,8 @@ const optionsPost = {
   }
 };
 
-export const fetchIndividualData = async (query, search) => {
-  const ENDPOINT = `https://api.discogs.com/database/search?type=${search}&q=${query}&per_page=25`;
+export const fetchIndividualData = async (query, search, page = 1, pageSize = 25) => {
+  const ENDPOINT = `https://api.discogs.com/database/search?type=${search}&q=${query}&per_page=${pageSize}&page=${page}`;
   try {
     const res = await fetch(ENDPOINT, options);
     return res.json();
@@ -25,8 +25,8 @@ export const fetchIndividualData = async (query, search) => {
   }
 }
 
-export const fetchCollection = async () => {
-  const ENDPOINT = "https://api.discogs.com/users/neired/collection/folders/0/releases";
+export const fetchCollection = async (page = 1, pageSize = 25) => {
+  const ENDPOINT = `https://api.discogs.com/users/neired/collection/folders/0/releases?per_page=${pageSize}&page=${page}`;
   try {
     const res = await fetch(ENDPOINT, options);
     return res.json();
@@ -44,3 +44,4 @@ export const postRelease = async (id) => {
     return console.log(`We couldn't add that item to your collection!`, error);
   }
 }
+
