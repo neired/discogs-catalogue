@@ -4,11 +4,9 @@ import { Layout, Typography, Pagination } from 'antd';
 import ReleaseList from './components/ReleaseList';
 import ArtistList from './components/ArtistList';
 import {fetchIndividualData, fetchCollection, postRelease} from './services/IndividualSearch';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, HashRouter } from 'react-router-dom';
 import Detail from './components/Detail';
 import Filter from './components/Filter/Filter';
-// import Header from './components/Header/Header';
-// import Footer from './components/Footer/Footer';
 import Collection from './components/Collection/Collection';
 
 class App extends React.Component {
@@ -49,7 +47,7 @@ class App extends React.Component {
     this.addToCollection = this.addToCollection.bind(this);
   };
   componentDidMount() {
-    console.log('STATE', this.state);
+    // console.log('STATE', this.state);
     fetchCollection()
     .then(data => {
       this.setState({
@@ -153,6 +151,7 @@ class App extends React.Component {
           </Header>
           <Content>
             <main>
+            <HashRouter>
               <Switch>
                 <Route exact path="/" render={() => {
                   return (
@@ -187,6 +186,7 @@ class App extends React.Component {
                   );
                 }} />
               </Switch>
+              </HashRouter>
             </main>
           </Content>
           <Footer className="App-footer">
