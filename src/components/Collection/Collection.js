@@ -11,9 +11,9 @@ const Collection = props => {
       <>
         <Divider orientation="left"><Title level={2}>Collection</Title></Divider>
         <Row>
-          {data.map(item => { 
+          {data.map((item, i) => { 
             return (
-              <Col xs={24} sm={12} md={8} lg={6} xl={4} key={item.id}>
+              <Col xs={24} sm={12} md={8} lg={6} xl={4} key={i}>
                 <Card bordered={false} cover={<Image width={150} alt="Album cover" src={item.basic_information.thumb} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"/>}>
                   <Link to={`/release/${item.id}`} className="">
                     <Meta title={item.basic_information.title} description={item.basic_information.year}></Meta>
