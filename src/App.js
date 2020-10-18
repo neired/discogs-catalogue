@@ -2,7 +2,7 @@ import React from 'react';
 import './App.less';
 import { Layout, Typography, Pagination } from 'antd';
 import List from './components/List';
-import {fetchIndividualData, fetchCollection, postRelease} from './services/IndividualSearch';
+import {fetchData, fetchCollection, postRelease} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
 import Filter from './components/Filter/Filter';
@@ -78,7 +78,7 @@ class App extends React.Component {
       isArtist: false,
     })
 
-    const requests = this.state.searchBy.map(type => type ? fetchIndividualData(this.state.query, type) : Promise.resolve(null))
+    const requests = this.state.searchBy.map(type => type ? fetchData(this.state.query, type) : Promise.resolve(null))
     Promise.all(requests).then(responses => {
       if(responses[0]) {
         this.setState({
@@ -102,7 +102,7 @@ class App extends React.Component {
     }
   }
   changeArtistPage(page, pageSize) {
-    fetchIndividualData(this.state.query, 'artist', page, pageSize)
+    fetchData(this.state.query, 'artist', page, pageSize)
       .then(data => {
         this.setState({
           artists: data.results,
@@ -111,7 +111,7 @@ class App extends React.Component {
       })
   }
   changeReleasePage(page, pageSize) {
-    fetchIndividualData(this.state.query, 'release', page, pageSize)
+    fetchData(this.state.query, 'release', page, pageSize)
       .then(data => {
         this.setState({
           releases: data.results,
@@ -131,13 +131,14 @@ class App extends React.Component {
 
   addToCollection(id) {
     postRelease(id)
-    // fetchCollection()
-    // .then(data => {
-    //   this.setState({
-    //     collection: data.releases,
-    //     collectionPag: data.pagination
-    //   });
-    // })
+    .then(data => {
+      this.state.collection.push(data);
+      const newPagination = this.state.collectionPag.items +1;
+      this.setState({
+        collection: this.state.collection,
+        collectionPag: newPagination
+      });
+    })
   }
   render() {
     const { query, artists, releases, artistsPag, releasesPag, isArtist, isRelease, collection, collectionPag } = this.state;
@@ -164,16 +165,18 @@ class App extends React.Component {
                       ></Filter>
 
                       {isArtist && 
-                      <List isArtist={isArtist} data={artists} ></List>
+                        <List isArtist={isArtist} data={artists} ></List>
                       }
                       {isArtist && artistsPag.pages !== 1 ? 
                         <Pagination size="small" showSizeChanger={false} current={artistsPag.page} total={artistsPag.items} onChange={this.changeArtistPage} pageSize={25}/> : ''
                       }
 
                       {isRelease && 
-                      <List isRelease={isRelease} data={releases} addToCollection={this.addToCollection}></List>
+                        <List isRelease={isRelease} data={releases} addToCollection={this.addToCollection}></List>
                       }
-                      {isRelease && releasesPag.pages !== 1 ? <Pagination size="small" showSizeChanger={false} defaultCurrent={releasesPag.page} total={releasesPag.items} onChange={this.changeReleasePage} pageSize={25}/> : ''}
+                      {isRelease && releasesPag.pages !== 1 ? 
+                        <Pagination size="small" showSizeChanger={false} defaultCurrent={releasesPag.page} total={releasesPag.items} onChange={this.changeReleasePage} pageSize={25}/> : ''
+                      }
                       <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
                     </>
                   )
