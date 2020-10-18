@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Avatar, Card, Pagination, Typography, Divider } from 'antd';
+import { Row, Col, Avatar, Card, Typography, Divider } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 
 const List = props => {
-  const { data, pagination, changeArtistPage } = props;
+  const { data } = props;
   const { Title } = Typography;
   const { Meta } = Card;
     return (
@@ -23,7 +23,6 @@ const List = props => {
               )
             })}
         </Row>
-        {pagination.pages !== 1 ? <Pagination size="small" showSizeChanger={false} current={pagination.page} total={pagination.items} onChange={changeArtistPage} pageSize={25}/> : ''}
       </>
     )
 }

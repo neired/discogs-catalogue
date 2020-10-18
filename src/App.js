@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.less';
-import { Layout, Typography } from 'antd';
+import { Layout, Typography, Pagination } from 'antd';
 import ReleaseList from './components/ReleaseList';
 import ArtistList from './components/ArtistList';
 import {fetchIndividualData, options, fetchCollection, postRelease} from './services/IndividualSearch';
@@ -179,7 +179,6 @@ class App extends React.Component {
     const { Header, Footer, Content } = Layout;
     const { Title, Text } = Typography;
     return (
-      // <div className="App">
         <Layout className="App">
           <Header className="App-header">
             <Title level={1}>Discogs Catalogue</Title>
@@ -198,7 +197,10 @@ class App extends React.Component {
                         query={query}
                         searchModes={this.searchModes}
                       ></Filter>
-                      {isArtist && <ArtistList isArtist={isArtist} data={artists} pagination={artistsPag} changeArtistPage={this.changeArtistPage}></ArtistList>}
+                      {isArtist && <ArtistList isArtist={isArtist} data={artists} ></ArtistList>}
+                      {isArtist && artistsPag.pages !== 1 ? 
+                        <Pagination size="small" showSizeChanger={false} current={artistsPag.page} total={artistsPag.items} onChange={this.changeArtistPage} pageSize={25}/> : ''
+                      }
                       {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage} addToCollection={this.addToCollection}></ReleaseList>}
                       <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
                     </>
