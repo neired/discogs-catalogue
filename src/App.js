@@ -1,14 +1,11 @@
 import React from 'react';
 import './App.less';
 import { Layout, Typography, Pagination } from 'antd';
-import ReleaseList from './components/ReleaseList';
-import ArtistList from './components/ArtistList';
+import List from './components/List';
 import {fetchIndividualData, fetchCollection, postRelease} from './services/IndividualSearch';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
 import Filter from './components/Filter/Filter';
-// import Header from './components/Header/Header';
-// import Footer from './components/Footer/Footer';
 import Collection from './components/Collection/Collection';
 
 class App extends React.Component {
@@ -166,13 +163,17 @@ class App extends React.Component {
                         searchModes={this.searchModes}
                       ></Filter>
 
-                      {isArtist && <ArtistList isArtist={isArtist} data={artists} ></ArtistList>}
+                      {isArtist && 
+                      <List isArtist={isArtist} data={artists} ></List>
+                      }
                       {isArtist && artistsPag.pages !== 1 ? 
                         <Pagination size="small" showSizeChanger={false} current={artistsPag.page} total={artistsPag.items} onChange={this.changeArtistPage} pageSize={25}/> : ''
                       }
 
-                      {isRelease && <ReleaseList isRelease={isRelease} data={releases} pagination={releasesPag} changeReleasePage={this.changeReleasePage} addToCollection={this.addToCollection}></ReleaseList>}
-                      
+                      {isRelease && 
+                      <List isRelease={isRelease} data={releases} addToCollection={this.addToCollection}></List>
+                      }
+                      {isRelease && releasesPag.pages !== 1 ? <Pagination size="small" showSizeChanger={false} defaultCurrent={releasesPag.page} total={releasesPag.items} onChange={this.changeReleasePage} pageSize={25}/> : ''}
                       <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
                     </>
                   )
