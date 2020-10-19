@@ -23,7 +23,7 @@ const Collection = props => {
             )
           })}
         </Row>
-        {pagination.pages !== 1 ? <Pagination size="small" showSizeChanger={false} defaultCurrent={pagination.page} total={pagination.items} onChange={changeCollectionPage} pageSize={25}/> : ''}
+        {pagination.items >= 26 ? <Pagination size="small" showSizeChanger={false} defaultCurrent={pagination.page} total={pagination.items} onChange={changeCollectionPage} pageSize={25}/> : ''}
       </>
     )
 }

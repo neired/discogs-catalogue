@@ -1,5 +1,5 @@
 import React from 'react';
-import {options} from '../services/IndividualSearch';
+import {options} from '../services/DiscogsFetches';
 import { Card, Breadcrumb, Image, Typography } from 'antd';
 
 class Detail extends React.Component {
