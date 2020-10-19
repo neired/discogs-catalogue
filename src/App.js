@@ -214,6 +214,7 @@ class App extends React.Component {
                     }
                     {isRelease && 
                       <Pagination 
+                      hideOnSinglePage
                       size="small" 
                       showSizeChanger={false} 
                       defaultCurrent={releasesPag.page} 
