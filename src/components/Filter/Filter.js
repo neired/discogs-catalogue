@@ -1,11 +1,11 @@
 import React from 'react';
-import './Filter.scss';
-import { Col, Input, Radio, Button } from 'antd';
+import './Filter.less';
+import { Col, Input, Radio, Button, Space } from 'antd';
 
 const Filter = props => {
   const {searchByEnter, getQuery, query, getSearch, fetchQueryData, searchModes} = props;
     return (
-      <>
+      <Space direction="vertical" size="middle">
       <label forhtml="name">
           <Input size="large" placeholder="Search by artist or album" onKeyPress={searchByEnter} onChange={getQuery} value={query}></Input>
       </label>
@@ -16,8 +16,8 @@ const Filter = props => {
           ))}
         </Radio.Group>
       </Col>
-        <Button type="primary" disabled={!query} onClick={fetchQueryData}>Search</Button> 
-      </>
+        <Button type="primary" disabled={!query} onClick={fetchQueryData} size="large">Search</Button> 
+      </Space>
     )
 }
   

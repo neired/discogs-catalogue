@@ -13,7 +13,7 @@ module.exports = {
                 '@breadcrumb-last-item-color': '@primary-color',
                 '@layout-header-background': '#000',
                 '@layout-header-color': '@primary-color',
-                '@shadow-color': 'rgba(255, 255, 255, 0.45)'
+                
             },
             javascriptEnabled: true,
           },
