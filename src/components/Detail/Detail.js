@@ -1,12 +1,15 @@
 import React from 'react';
 import {options} from '../../services/DiscogsFetches';
-import { Card, Breadcrumb, Image, Typography } from 'antd';
-
+import { Card, Image, Typography, Spin, Space, Avatar, Row, Col } from 'antd';
+import './Detail.less';
+import DetailBreadcrumb from '../Breadcrumb/DetailBreadcrumb';
 class Detail extends React.Component {
   constructor(props) {
     super(props); 
     this.state = {
-      item: ''
+      item: '',
+      loading: true,
+      error: false
     }
   };
 
@@ -21,50 +24,96 @@ class Detail extends React.Component {
     const url = `https://api.discogs.com/${type}s/${id}`;
     fetch(url, options)
       .then(res => res.json())
-      .catch(error => console.log('Oops!', error))
+      .catch(error => {console.log('Oops!', error); this.setState({ error: true })})
       .then(data => {
-        this.setState({ item: data })
+        this.setState({ item: data, loading: false })
       })
   }
-
+  
   render() {
-    const { item } = this.state;
+    const { item, loading, error } = this.state;
+    console.log(item);
     const { Title, Text, Paragraph } = Typography;
+    const placeholderImg = `https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=40`;
+    
+    if (item && item.name) {
       return (
-        <>
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <a href="/">Home</a>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>{item.name || item.title}</Breadcrumb.Item>
-          </Breadcrumb>
-          <Card>
-          <Image width={150} src={item.images && item.images[0].resource_url} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"></Image>
-            <Title level={2}>{item.name || item.title}</Title>
-            {item.artists && item.artists.map((artist) => { return ( 
-              <Title level={3} key={artist.id}>{artist.name}</Title>
-            )})}
-            {item.namevariations && <Text>Also known as: {item.namevariations}</Text>}
-            <Text>{item.year}</Text>
-            <Paragraph ellipsis={{ rows: 3, expandable: true, symbol: 'more' }}>{item.profile || item.notes}</Paragraph>
-            {item.styles && <Text>Styles: {item.styles}</Text>}
-            {item.genres && <Text>Genres: {item.genres}</Text>}
-            {item.tracklist &&<ol>Tracklist:
-              {item.tracklist && item.tracklist.map((track) => { return (
-                <li key={track.position}><span>{track.title}</span><span>{track.duration}</span></li>
-              )})}
-            </ol>}
-            {item.members &&<ol>Members:
-              {item.members && item.members.map((member) => { return (
-                <li key={member.id}>
-                  <Image width={50} src={member.thumbnail_url} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"></Image>
-                  <Text>{member.name}</Text>
-                </li>
-            )})}
-            </ol>}
+        <div className="detail-section">
+          <DetailBreadcrumb current={item.name}></DetailBreadcrumb>
+          <Card className="detail-card">
+            <div className="detail-header">
+              <Image className="detail-img" size={150} width={150} src={item.images ? item.images[0].resource_url : placeholderImg}></Image>
+              <div className="detail-header-text">
+                <Title level={2}>{item.name}</Title>
+                {item.namevariations && <Text><span className="default-text">Also known as:</span> {item.namevariations.join(', ')}</Text>}
+              </div>
+            </div>
+            <Paragraph className="detail-description" ellipsis={{ rows: 3, expandable: true, symbol: 'more' }}>{item.profile}</Paragraph>
+            {item.members &&
+              <Row>
+                {item.members && item.members.map((member) => { return (
+                  <Col xs={24} sm={12} md={6} lg={5} className="detail-members" key={member.id}>
+                    <Space size="middle">
+                      <Avatar size={50} src={member.thumbnail_url || placeholderImg}></Avatar>
+                      <Text>{member.name}</Text>
+                    </Space>
+                  </Col>
+                )})}
+              </Row>}
           </Card>
-        </>
+        </div>
       )
+    } else if (item && item.title) {
+      const artistsArr = [];
+      item.artists && item.artists.map((artist) => artistsArr.push(artist.name));
+      return (
+        <div className="detail-section">
+          <DetailBreadcrumb current={item.title}></DetailBreadcrumb>
+          <Card className="detail-card">
+            <div className="detail-header">
+              <Image className="detail-img" size={150} width={150} src={item.images ? item.images[0].resource_url : placeholderImg}></Image>
+              <div className="detail-header-text">
+                <Title level={2}>{item.title} <span className="default-text">by</span> {artistsArr.join(', ')}</Title>
+                <Paragraph><span className="default-text">Year:</span> {item.year}</Paragraph>
+                {item.styles && <Paragraph><span className="default-text">Styles:</span> {item.styles.join(', ')}</Paragraph>}
+                {item.genres && <Paragraph><span className="default-text">Genres:</span> {item.genres.join(', ')}</Paragraph>}
+              </div>
+            </div>
+            <Paragraph className="detail-description" ellipsis={{ rows: 3, expandable: true, symbol: 'more' }}>{item.notes}</Paragraph>
+              {item.tracklist &&
+              <ol className="detail-list"><span className="default-text">Tracklist:</span>
+                {item.tracklist && item.tracklist.map((track) => { return (
+                  <li className="detail-list-item" key={track.position}>
+                    <Space direction="horizontal" split="-">
+                      <Text>{track.title}</Text>
+                      <Text>{track.duration && <span>{track.duration}</span>}</Text>
+                    </Space>
+                  </li>
+                )})}
+              </ol>}
+          </Card>
+        </div>
+      )
+    } else if (error) {
+      return (
+        <div className="detail-section">
+          <DetailBreadcrumb current="Error"></DetailBreadcrumb>
+          <Card className="detail-card">
+            <div className="detail-header">
+              <Image width={150} src="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=40"></Image>
+              <div className="detail-header-text">
+                <Title level={2}>Oops... Something went wrong!</Title>
+                <Paragraph>Looks like the artist or album you are looking for doesn't exist yet...</Paragraph>
+                <Paragraph>Have you ever considered starting a band of your own?</Paragraph>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )
+    }
+    return (
+      <Spin className="detail-spin" spinning={loading} size="large"></Spin>
+    )
   }
 }
 

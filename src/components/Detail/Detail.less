@@ -1,0 +1,55 @@
+@import '~antd/dist/antd.dark.less';
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+}
+.detail-spin {
+  margin: auto;
+}
+.detail-card {
+  margin: 24px;
+}
+.detail-header {
+  display: flex;
+  flex-direction: column;
+  @media all and (min-width: @screen-md) {
+    flex-direction: row;
+  }
+}
+.detail-img {
+  margin: auto;
+  margin-bottom: 12px;
+  @media all and (min-width: @screen-md) {
+    margin: 0;
+  }
+}
+.detail-header-text {
+  @media all and (min-width: @screen-md) {
+    text-align: left;
+    padding-left: 24px;
+  }
+}
+.detail-description {
+  text-align: left;
+  margin-top: 12px;
+}
+.detail-list {
+  max-width: 450px;
+  margin: 20px auto;
+  padding-left: 0;
+  list-style: none;
+}
+.detail-list-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.default-text {
+  font-weight: 700;
+  opacity: 0.6;
+}
+.detail-members { 
+  margin: 12px auto;
+}
