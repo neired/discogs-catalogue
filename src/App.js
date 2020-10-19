@@ -1,14 +1,14 @@
 import React from 'react';
-import './App.less';
-
-import { Layout, Typography, Pagination, Spin, Divider } from 'antd';
-import List from './components/List/List';
-import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
 import { Route, Switch, HashRouter } from 'react-router-dom';
+import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
+import './App.less';
+import { Layout, Typography, Pagination, Spin } from 'antd';
+import { HeartOutlined } from '@ant-design/icons';
+import List from './components/List/List';
 import Detail from './components/Detail/Detail';
 import Filter from './components/Filter/Filter';
 import Collection from './components/Collection/Collection';
-import { HeartOutlined } from '@ant-design/icons';
+import Error from './components/Error/Error';
 class App extends React.Component {
   constructor(props) {
     super(props); 
@@ -16,6 +16,7 @@ class App extends React.Component {
     this.state = {
       loading: false,
       isCollectionLoading: true,
+      error: false,
       artists: [],
       releases: [],
       collection: [],
@@ -49,7 +50,6 @@ class App extends React.Component {
     this.addToCollection = this.addToCollection.bind(this);
   };
   componentDidMount() {
-    // console.log('STATE', this.state);
     fetchCollection()
     .then(data => {
       this.setState({
@@ -75,6 +75,7 @@ class App extends React.Component {
   fetchQueryData() {
     this.setState({
       loading: true,
+      error:false,
       releases: [],
       releasesPag: {},
       artists: [],
@@ -85,21 +86,30 @@ class App extends React.Component {
 
     const requests = this.state.searchBy.map(type => type ? fetchData(this.state.query, type) : Promise.resolve(null))
     Promise.all(requests).then(responses => {
+      console.log(responses)
       if(responses[0]) {
-        this.setState({
-          loading: false,
-          isArtist: true,
-          artists: responses[0].results,
-          artistsPag: responses[0].pagination,
-        })
+        if (responses[0].pagination.items === 0) {
+          this.setState({ error: true, loading: false })
+        } else {
+          this.setState({
+            loading: false,
+            isArtist: true,
+            artists: responses[0].results,
+            artistsPag: responses[0].pagination,
+          })
+        }
       }
       if(responses[1]) {
-        this.setState({
-          loading: false,
-          isRelease: true,
-          releases: responses[1].results,
-          releasesPag: responses[1].pagination
-        });
+        if (responses[1].pagination.items === 0) {
+          this.setState({ error: true, loading: false })
+        } else {
+          this.setState({
+            loading: false,
+            isRelease: true,
+            releases: responses[1].results,
+            releasesPag: responses[1].pagination
+          });
+        }
       }
     })
   }
@@ -154,7 +164,7 @@ class App extends React.Component {
     })
   }
   render() {
-    const { query, artists, releases, artistsPag, isCollectionLoading, loading, releasesPag, isArtist, isRelease, collection, collectionPag } = this.state;
+    const { query, artists, releases, artistsPag, isCollectionLoading, loading, releasesPag, isArtist, isRelease, collection, collectionPag, error } = this.state;
     const { Header, Footer, Content } = Layout;
     const { Title, Text } = Typography;
     return (
@@ -180,35 +190,37 @@ class App extends React.Component {
                       isArtist={isArtist}
                       isRelease={isRelease}>
                     </Filter>
+                    {error && <Error></Error>}
                     <Spin spinning={loading} size="large"></Spin>
                     {isArtist && 
                       <List isArtist={isArtist} data={artists} ></List>
                     }
-                    {isArtist && artistsPag.pages !== 1 ? 
+                    {isArtist && 
                       <Pagination 
-                        size="small" 
-                        showSizeChanger={false} 
-                        current={artistsPag.page} 
-                        total={artistsPag.items} 
-                        onChange={this.changeArtistPage} 
-                        pageSize={12}/> : ''
+                      hideOnSinglePage
+                      size="small" 
+                      showSizeChanger={false} 
+                      current={artistsPag.page} 
+                      total={artistsPag.items} 
+                      onChange={this.changeArtistPage} 
+                      pageSize={12}/>
                     }
-
                     {isRelease && 
                       <List 
-                        isRelease={isRelease} 
-                        data={releases} 
-                        addToCollection={this.addToCollection}>
+                      isRelease={isRelease} 
+                      data={releases} 
+                      addToCollection={this.addToCollection}>
                       </List>
                     }
-                    {isRelease && releasesPag.pages !== 1 ? 
+                    {isRelease && 
                       <Pagination 
-                        size="small" 
-                        showSizeChanger={false} 
-                        defaultCurrent={releasesPag.page} 
-                        total={releasesPag.items} 
-                        onChange={this.changeReleasePage} 
-                        pageSize={12}/> : ''
+                      hideOnSinglePage
+                      size="small" 
+                      showSizeChanger={false} 
+                      defaultCurrent={releasesPag.page} 
+                      total={releasesPag.items} 
+                      onChange={this.changeReleasePage} 
+                      pageSize={12}/>
                     }
                     <Collection 
                       data={collection} 
@@ -231,7 +243,6 @@ class App extends React.Component {
             </Switch>
             </HashRouter>
           </Content>
-          <Divider className="footer-divider"></Divider>
           <Footer className="footer">
             <Text><a href='/'>Discogs Catalogue</a></Text>
             <Text>Made with <HeartOutlined/> by <a href='https://github.com/neired'>Natalia Millán</a></Text>
