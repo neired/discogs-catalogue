@@ -1,9 +1,10 @@
 import React from 'react';
 import './App.less';
+
 import { Layout, Typography, Pagination, Spin, Divider } from 'antd';
 import List from './components/List/List';
 import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, HashRouter } from 'react-router-dom';
 import Detail from './components/Detail/Detail';
 import Filter from './components/Filter/Filter';
 import Collection from './components/Collection/Collection';
@@ -48,7 +49,7 @@ class App extends React.Component {
     this.addToCollection = this.addToCollection.bind(this);
   };
   componentDidMount() {
-    console.log('STATE', this.state);
+    // console.log('STATE', this.state);
     fetchCollection()
     .then(data => {
       this.setState({
@@ -164,7 +165,8 @@ class App extends React.Component {
             </a>
           </Header>
           <Content>
-            <Switch>
+            <HashRouter>
+              <Switch>
               <Route exact path="/" render={() => {
                 return (
                   <>
@@ -227,6 +229,7 @@ class App extends React.Component {
                 );
               }} />
             </Switch>
+            </HashRouter>
           </Content>
           <Divider className="footer-divider"></Divider>
           <Footer className="footer">
