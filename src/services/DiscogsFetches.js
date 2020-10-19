@@ -15,7 +15,7 @@ const optionsPost = {
   }
 };
 
-export const fetchIndividualData = async (query, search, page = 1, pageSize = 25) => {
+export const fetchData = async (query, search, page = 1, pageSize = 12) => {
   const ENDPOINT = `https://api.discogs.com/database/search?type=${search}&q=${query}&per_page=${pageSize}&page=${page}`;
   try {
     const res = await fetch(ENDPOINT, options);
@@ -25,7 +25,7 @@ export const fetchIndividualData = async (query, search, page = 1, pageSize = 25
   }
 }
 
-export const fetchCollection = async (page = 1, pageSize = 25) => {
+export const fetchCollection = async (page = 1, pageSize = 12) => {
   const ENDPOINT = `https://api.discogs.com/users/neired/collection/folders/0/releases?per_page=${pageSize}&page=${page}`;
   try {
     const res = await fetch(ENDPOINT, options);
