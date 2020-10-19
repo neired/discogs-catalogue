@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Collection.scss';
+import './Collection.less';
 import { Row, Col, Image, Card, Pagination, Typography, Divider } from 'antd';
 
 const Collection = props => {
@@ -13,12 +13,12 @@ const Collection = props => {
         <Row>
           {data.map((item, i) => { 
             return (
-              <Col xs={24} sm={12} md={8} lg={6} xl={4} key={i}>
-                <Card bordered={false} cover={<Image width={150} alt="Album cover" src={item.basic_information.thumb} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"/>}>
-                  <Link to={`/release/${item.id}`} className="">
+              <Col xs={24} sm={6} md={4} lg={3} key={i}>
+                <Link to={`/release/${item.id}`} className="">
+                  <Card bordered={false} cover={<Image width={100} alt="Album cover" src={item.basic_information.thumb} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"/>}>
                     <Meta title={item.basic_information.title} description={item.basic_information.year}></Meta>
-                  </Link>
-                </Card>
+                  </Card>
+                </Link>
               </Col>
             )
           })}

@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.less';
 import { Layout, Typography, Pagination } from 'antd';
-import List from './components/List';
+import List from './components/List/List';
 import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
@@ -168,14 +168,14 @@ class App extends React.Component {
                         <List isArtist={isArtist} data={artists} ></List>
                       }
                       {isArtist && artistsPag.pages !== 1 ? 
-                        <Pagination size="small" showSizeChanger={false} current={artistsPag.page} total={artistsPag.items} onChange={this.changeArtistPage} pageSize={25}/> : ''
+                        <Pagination size="small" showSizeChanger={false} current={artistsPag.page} total={artistsPag.items} onChange={this.changeArtistPage} pageSize={12}/> : ''
                       }
 
                       {isRelease && 
                         <List isRelease={isRelease} data={releases} addToCollection={this.addToCollection}></List>
                       }
                       {isRelease && releasesPag.pages !== 1 ? 
-                        <Pagination size="small" showSizeChanger={false} defaultCurrent={releasesPag.page} total={releasesPag.items} onChange={this.changeReleasePage} pageSize={25}/> : ''
+                        <Pagination size="small" showSizeChanger={false} defaultCurrent={releasesPag.page} total={releasesPag.items} onChange={this.changeReleasePage} pageSize={12}/> : ''
                       }
                       <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
                     </>
