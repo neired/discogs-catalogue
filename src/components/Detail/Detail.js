@@ -3,6 +3,8 @@ import {options} from '../../services/DiscogsFetches';
 import { Card, Image, Typography, Spin, Space, Avatar, Row, Col } from 'antd';
 import './Detail.less';
 import DetailBreadcrumb from '../Breadcrumb/DetailBreadcrumb';
+import Error from '../Error/Error';
+
 class Detail extends React.Component {
   constructor(props) {
     super(props); 
@@ -98,16 +100,7 @@ class Detail extends React.Component {
       return (
         <div className="detail-section">
           <DetailBreadcrumb current="Error"></DetailBreadcrumb>
-          <Card className="detail-card">
-            <div className="detail-header">
-              <Image width={150} src="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=40"></Image>
-              <div className="detail-header-text">
-                <Title level={2}>Oops... Something went wrong!</Title>
-                <Paragraph>Looks like the artist or album you are looking for doesn't exist yet...</Paragraph>
-                <Paragraph>Have you ever considered starting a band of your own?</Paragraph>
-              </div>
-            </div>
-          </Card>
+          <Error></Error>
         </div>
       )
     }

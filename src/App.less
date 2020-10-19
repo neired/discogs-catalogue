@@ -2,7 +2,7 @@
 
 .app {
   text-align: center;
-  min-height: 100vh;
+  min-height: 100vh !important;
 }
 main {
   display: flex;
@@ -39,12 +39,9 @@ h1.header-title {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-top: 1px solid @secondary-color;
   @media all and (min-width: @screen-md) {
     flex-direction: row;
     justify-content: space-between;
   }
-}
-.footer-divider {
-  margin: 0;
-  color: @primary-color;
 }

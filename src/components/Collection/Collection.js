@@ -14,7 +14,7 @@ const Collection = props => {
           <Spin spinning={loading} size="large"></Spin>
           {data.map((item, i) => { 
             return (
-              <Col xs={12} sm={6} md={4} lg={3} key={i}>
+              <Col xs={12} sm={4} md={3} key={i}>
                 <Link to={`/release/${item.id}`} className="">
                   <Card hoverable bordered={false} cover={<Image width={70} alt="Album cover" src={item.basic_information.thumb} fallback="https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=14"/>}>
                     <Meta title={item.basic_information.title} description={item.basic_information.year}></Meta>
@@ -24,7 +24,7 @@ const Collection = props => {
             )
           })}
         </Row>
-        {pagination.items >= 26 ? <Pagination size="small" showSizeChanger={false} defaultCurrent={pagination.page} total={pagination.items} onChange={changeCollectionPage} pageSize={25}/> : ''}
+        <Pagination hideOnSinglePage size="small" showSizeChanger={false} defaultCurrent={pagination.page} total={pagination.items} onChange={changeCollectionPage} pageSize={25}/>
       </>
     )
 }

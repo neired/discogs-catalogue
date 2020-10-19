@@ -19,7 +19,7 @@ const List = props => {
                 <Link to={`/${item.type}/${item.id}`} className="">
                   <Card hoverable bordered={false} cover={item.country ? 
                     <Image width={100} alt="Album cover" src={item.thumb} fallback={`${placeholderImg}&img=${index}`}/> 
-                    : <Avatar gap={0} size={100} src={item.thumb || `${placeholderImg}&img=${index}`} icon={<UserOutlined/>}></Avatar>}>
+                    : <Avatar className="list-avatar" gap={0} size={100} src={item.thumb || `${placeholderImg}&img=${index}`} icon={<UserOutlined/>}></Avatar>}>
                     <Meta title={item.title} description={item.country ? `${item.country} - ${item.year}` : ''}></Meta>
                   </Card>
                 </Link>
