@@ -11,8 +11,7 @@ module.exports = {
                 '@primary-color': '#AF4FFA',
                 '@card-background': 'transparent',
                 '@breadcrumb-last-item-color': '@primary-color',
-                '@layout-header-background': 'transparent',
-                '@layout-header-color': '@primary-color'
+                '@layout-header-background': '#000'
             },
             javascriptEnabled: true,
           },

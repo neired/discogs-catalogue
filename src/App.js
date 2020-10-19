@@ -1,18 +1,20 @@
 import React from 'react';
 import './App.less';
-import { Layout, Typography, Pagination } from 'antd';
-import List from './components/List';
+import { Layout, Typography, Pagination, Spin, Divider } from 'antd';
+import List from './components/List/List';
 import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
 import { Route, Switch } from 'react-router-dom';
-import Detail from './components/Detail';
+import Detail from './components/Detail/Detail';
 import Filter from './components/Filter/Filter';
 import Collection from './components/Collection/Collection';
-
+import { HeartOutlined } from '@ant-design/icons';
 class App extends React.Component {
   constructor(props) {
     super(props); 
     this.ref = React.createRef();
     this.state = {
+      loading: false,
+      isCollectionLoading: true,
       artists: [],
       releases: [],
       collection: [],
@@ -51,7 +53,8 @@ class App extends React.Component {
     .then(data => {
       this.setState({
         collection: data.releases,
-        collectionPag: data.pagination
+        collectionPag: data.pagination,
+        isCollectionLoading: false
       });
     })
   }
@@ -70,6 +73,7 @@ class App extends React.Component {
   }
   fetchQueryData() {
     this.setState({
+      loading: true,
       releases: [],
       releasesPag: {},
       artists: [],
@@ -82,6 +86,7 @@ class App extends React.Component {
     Promise.all(requests).then(responses => {
       if(responses[0]) {
         this.setState({
+          loading: false,
           isArtist: true,
           artists: responses[0].results,
           artistsPag: responses[0].pagination,
@@ -89,6 +94,7 @@ class App extends React.Component {
       }
       if(responses[1]) {
         this.setState({
+          loading: false,
           isRelease: true,
           releases: responses[1].results,
           releasesPag: responses[1].pagination
@@ -102,27 +108,33 @@ class App extends React.Component {
     }
   }
   changeArtistPage(page, pageSize) {
+    this.setState({ loading: true });
     fetchData(this.state.query, 'artist', page, pageSize)
       .then(data => {
         this.setState({
+          loading: false,
           artists: data.results,
           artistsPag: data.pagination,
         });
       })
   }
   changeReleasePage(page, pageSize) {
+    this.setState({ loading: true });
     fetchData(this.state.query, 'release', page, pageSize)
       .then(data => {
         this.setState({
+          loading: false,
           releases: data.results,
           releasesPag: data.pagination,
         });
       })
   }
   changeCollectionPage(page, pageSize) {
+    this.setState({ loading: true });
     fetchCollection(page, pageSize)
       .then(data => {
         this.setState({
+          loading: false,
           collection: data.releases,
           collectionPag: data.pagination,
         });
@@ -141,60 +153,85 @@ class App extends React.Component {
     })
   }
   render() {
-    const { query, artists, releases, artistsPag, releasesPag, isArtist, isRelease, collection, collectionPag } = this.state;
+    const { query, artists, releases, artistsPag, isCollectionLoading, loading, releasesPag, isArtist, isRelease, collection, collectionPag } = this.state;
     const { Header, Footer, Content } = Layout;
     const { Title, Text } = Typography;
     return (
-        <Layout className="App">
-          <Header className="App-header">
-            <Title level={1}>Discogs Catalogue</Title>
+        <Layout className="app">
+          <Header className="header">
+            <a href='/'>
+              <Title level={1} className="header-title">Discogs Catalogue</Title>
+            </a>
           </Header>
           <Content>
-            <main>
-              <Switch>
-                <Route exact path="/" render={() => {
-                  return (
-                    <>
-                      <Filter 
-                        searchByEnter={this.searchByEnter} 
-                        getQuery={this.getQuery} 
-                        getSearch={this.getSearch} 
-                        fetchQueryData={this.fetchQueryData}
-                        query={query}
-                        searchModes={this.searchModes}
-                      ></Filter>
-
-                      {isArtist && 
-                        <List isArtist={isArtist} data={artists} ></List>
-                      }
-                      {isArtist && artistsPag.pages !== 1 ? 
-                        <Pagination size="small" showSizeChanger={false} current={artistsPag.page} total={artistsPag.items} onChange={this.changeArtistPage} pageSize={25}/> : ''
-                      }
-
-                      {isRelease && 
-                        <List isRelease={isRelease} data={releases} addToCollection={this.addToCollection}></List>
-                      }
-                      {isRelease && releasesPag.pages !== 1 ? 
-                        <Pagination size="small" showSizeChanger={false} defaultCurrent={releasesPag.page} total={releasesPag.items} onChange={this.changeReleasePage} pageSize={25}/> : ''
-                      }
-                      <Collection data={collection} pagination={collectionPag} changeCollectionPage={this.changeCollectionPage}></Collection>
-                    </>
-                  )
-                }} />
-                <Route path="/:detailType/:detailID" render={routerProps => {
-                  return (
-                    <Detail 
-                      routerProps={routerProps}
+            <Switch>
+              <Route exact path="/" render={() => {
+                return (
+                  <>
+                    <Filter 
+                      searchByEnter={this.searchByEnter} 
+                      getQuery={this.getQuery} 
+                      getSearch={this.getSearch} 
+                      fetchQueryData={this.fetchQueryData}
+                      query={query}
+                      searchModes={this.searchModes}
                       isArtist={isArtist}
-                      isRelease={isRelease}
-                    />
-                  );
-                }} />
-              </Switch>
-            </main>
+                      isRelease={isRelease}>
+                    </Filter>
+                    <Spin spinning={loading} size="large"></Spin>
+                    {isArtist && 
+                      <List isArtist={isArtist} data={artists} ></List>
+                    }
+                    {isArtist && artistsPag.pages !== 1 ? 
+                      <Pagination 
+                        size="small" 
+                        showSizeChanger={false} 
+                        current={artistsPag.page} 
+                        total={artistsPag.items} 
+                        onChange={this.changeArtistPage} 
+                        pageSize={12}/> : ''
+                    }
+
+                    {isRelease && 
+                      <List 
+                        isRelease={isRelease} 
+                        data={releases} 
+                        addToCollection={this.addToCollection}>
+                      </List>
+                    }
+                    {isRelease && releasesPag.pages !== 1 ? 
+                      <Pagination 
+                        size="small" 
+                        showSizeChanger={false} 
+                        defaultCurrent={releasesPag.page} 
+                        total={releasesPag.items} 
+                        onChange={this.changeReleasePage} 
+                        pageSize={12}/> : ''
+                    }
+                    <Collection 
+                      data={collection} 
+                      pagination={collectionPag}
+                      loading={isCollectionLoading}
+                      changeCollectionPage={this.changeCollectionPage}>
+                    </Collection>
+                  </>
+                )
+              }} />
+              <Route path="/:detailType/:detailID" render={routerProps => {
+                return (
+                  <Detail 
+                    routerProps={routerProps}
+                    isArtist={isArtist}
+                    isRelease={isRelease}
+                  />
+                );
+              }} />
+            </Switch>
           </Content>
-          <Footer className="App-footer">
-            <Text>Made with love</Text>
+          <Divider className="footer-divider"></Divider>
+          <Footer className="footer">
+            <Text><a href='/'>Discogs Catalogue</a></Text>
+            <Text>Made with <HeartOutlined/> by <a href='https://github.com/neired'>Natalia Millán</a></Text>
           </Footer>
         </Layout>
     )
