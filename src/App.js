@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.less';
-import { Layout, Typography, Pagination } from 'antd';
+import { Layout, Typography, Pagination, Spin } from 'antd';
 import List from './components/List/List';
 import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
-import { Route, Switch, Link } from 'react-router-dom';
-import Detail from './components/Detail';
+import { Route, Switch } from 'react-router-dom';
+import Detail from './components/Detail/Detail';
 import Filter from './components/Filter/Filter';
 import Collection from './components/Collection/Collection';
 
@@ -13,7 +13,7 @@ class App extends React.Component {
     super(props); 
     this.ref = React.createRef();
     this.state = {
-      loading: true,
+      loading: false,
       isCollectionLoading: true,
       artists: [],
       releases: [],
@@ -159,9 +159,9 @@ class App extends React.Component {
     return (
         <Layout className="App">
           <Header className="App-header">
-            <Link to={'/'} className="">
+            <a href='/'>
               <Title level={1}>Discogs Catalogue</Title>
-            </Link>
+            </a>
           </Header>
           <Content>
             <Switch>
@@ -174,9 +174,11 @@ class App extends React.Component {
                       getSearch={this.getSearch} 
                       fetchQueryData={this.fetchQueryData}
                       query={query}
-                      searchModes={this.searchModes}>
+                      searchModes={this.searchModes}
+                      isArtist={isArtist}
+                      isRelease={isRelease}>
                     </Filter>
-
+                    <Spin spinning={loading} size="large"></Spin>
                     {isArtist && 
                       <List isArtist={isArtist} data={artists} ></List>
                     }
