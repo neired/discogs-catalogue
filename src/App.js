@@ -2,7 +2,7 @@ import React from 'react';
 import './App.less';
 import { Layout, Typography, Pagination } from 'antd';
 import List from './components/List';
-import {fetchData, fetchCollection, postRelease} from './services/IndividualSearch';
+import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail';
 import Filter from './components/Filter/Filter';
