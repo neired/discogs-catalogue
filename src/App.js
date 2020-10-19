@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.less';
-import { Layout, Typography, Pagination, Spin } from 'antd';
+import { Layout, Typography, Pagination, Spin, Divider } from 'antd';
 import List from './components/List/List';
 import {fetchData, fetchCollection, postRelease} from './services/DiscogsFetches';
 import { Route, Switch } from 'react-router-dom';
 import Detail from './components/Detail/Detail';
 import Filter from './components/Filter/Filter';
 import Collection from './components/Collection/Collection';
-
+import { HeartOutlined } from '@ant-design/icons';
 class App extends React.Component {
   constructor(props) {
     super(props); 
@@ -157,10 +157,10 @@ class App extends React.Component {
     const { Header, Footer, Content } = Layout;
     const { Title, Text } = Typography;
     return (
-        <Layout className="App">
-          <Header className="App-header">
+        <Layout className="app">
+          <Header className="header">
             <a href='/'>
-              <Title level={1}>Discogs Catalogue</Title>
+              <Title level={1} className="header-title">Discogs Catalogue</Title>
             </a>
           </Header>
           <Content>
@@ -228,8 +228,10 @@ class App extends React.Component {
               }} />
             </Switch>
           </Content>
-          <Footer className="App-footer">
-            <Text>Made with love</Text>
+          <Divider className="footer-divider"></Divider>
+          <Footer className="footer">
+            <Text><a href='/'>Discogs Catalogue</a></Text>
+            <Text>Made with <HeartOutlined/> by <a href='https://github.com/neired'>Natalia Millán</a></Text>
           </Footer>
         </Layout>
     )
