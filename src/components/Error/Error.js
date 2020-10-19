@@ -10,7 +10,7 @@ const DetailBreadcrumb = props => {
           <div className="detail-header-text">
             <Title level={2}>Oops... Something went wrong!</Title>
             <Paragraph>Looks like the artist or album you are looking for doesn't exist yet...</Paragraph>
-            <Paragraph>Have you ever considered starting a band of your own?</Paragraph>
+            <Paragraph>Have you ever considered starting a band with that name?</Paragraph>
           </div>
         </div>
       </Card>
