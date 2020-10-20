@@ -170,7 +170,7 @@ class App extends React.Component {
     return (
         <Layout className="app">
           <Header className="header">
-            <Title level={1} className="header-title"><a href='/'>Discogs Catalogue</a></Title>            
+            <Title level={1} className="header-title"><a href="./">Discogs Catalogue</a></Title>            
           </Header>
           <Content>
             <HashRouter>

@@ -7,7 +7,7 @@ const DetailBreadcrumb = props => {
     return (
         <Breadcrumb className="breadcrumb">
         <Breadcrumb.Item>
-          <a href="/">Home</a>
+          <a href="./">Home</a>
         </Breadcrumb.Item>
         <Breadcrumb.Item>{current}</Breadcrumb.Item>
       </Breadcrumb>
