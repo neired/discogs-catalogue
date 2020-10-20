@@ -242,7 +242,7 @@ class App extends React.Component {
             </HashRouter>
           </Content>
           <Footer className="footer">
-            <Text><a href='/'>Discogs Catalogue</a></Text>
+            <Text><a href="./">Discogs Catalogue</a></Text>
             <Text>Made with <HeartOutlined/> by <a href='https://github.com/neired'>Natalia Millán</a></Text>
           </Footer>
         </Layout>
