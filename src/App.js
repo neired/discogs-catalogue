@@ -198,7 +198,7 @@ class App extends React.Component {
                       size="small" 
                       showSizeChanger={false} 
                       current={artistsPag.page} 
-                      total={artistsPag.items} 
+                      total={artistsPag.items >= 9996 ? 9996 : artistsPag.items} 
                       onChange={this.changeArtistPage} 
                       pageSize={12}/>
                     }
@@ -215,7 +215,7 @@ class App extends React.Component {
                       size="small" 
                       showSizeChanger={false} 
                       defaultCurrent={releasesPag.page} 
-                      total={releasesPag.items} 
+                      total={releasesPag.items >= 9996 ? 9996 : releasesPag.items} 
                       onChange={this.changeReleasePage} 
                       pageSize={12}/>
                     }

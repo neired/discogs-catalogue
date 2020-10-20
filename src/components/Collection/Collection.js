@@ -24,7 +24,14 @@ const Collection = props => {
             )
           })}
         </div>
-        <Pagination hideOnSinglePage size="small" showSizeChanger={false} defaultCurrent={pagination.page} total={pagination.items} onChange={changeCollectionPage} pageSize={25}/>
+        <Pagination 
+          hideOnSinglePage 
+          size="small" 
+          showSizeChanger={false} 
+          defaultCurrent={pagination.page} 
+          total={pagination.items >= 9996 ? 9996 : pagination.items} 
+          onChange={changeCollectionPage} 
+          pageSize={25}/>
       </>
     )
 }
