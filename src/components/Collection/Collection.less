@@ -1,8 +1,24 @@
+@import '~antd/dist/antd.dark.less';
+
 .collection-row {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-bottom: 12px;
-    height: 189px;
-    overflow-x: auto;
+  margin-bottom: 12px;
+  height: 189px;
+  overflow-x: auto;
+  display: grid;
+  height: 100%;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(4, 28%);
+  grid-auto-columns: 28%;
+  @media all and (min-width: @screen-sm) {
+    grid-template-columns: repeat(4, 22%);
+    grid-auto-columns: 22%;
+  }
+  @media all and (min-width: @screen-md) {
+    grid-template-columns: repeat(4, 18%);
+    grid-auto-columns: 18%;
+  }
+  @media all and (min-width: @screen-lg) {
+    grid-template-columns: repeat(4, 13%);
+    grid-auto-columns: 13%;
+  }
 }

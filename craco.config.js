@@ -13,7 +13,9 @@ module.exports = {
                 '@card-background': 'transparent',
                 '@breadcrumb-separator-color': '@primary-color',
                 '@layout-header-background': '#000',
-                '@layout-header-height': '100px'
+                '@layout-header-height': '110px',
+                '@layout-header-padding': '12px',
+                '@layout-header-color': '@primary-color'
             },
             javascriptEnabled: true,
           },

@@ -15,7 +15,7 @@ const List = props => {
         <Row gutter={[0, 24]}>
           {data.map((item, index) => { 
             return (
-              <Col xs={24} sm={6} md={4} lg={3}  key={item.id}>
+              <Col xs={12} sm={6} md={4} lg={3}  key={item.id}>
                 <Link to={`/${item.type}/${item.id}`} className="">
                   <Card hoverable bordered={false} cover={item.country ? 
                     <Image width={100} alt="Album cover" src={item.thumb} fallback={`${placeholderImg}&img=${index}`}/> 

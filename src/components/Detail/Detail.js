@@ -34,7 +34,6 @@ class Detail extends React.Component {
   
   render() {
     const { item, loading, error } = this.state;
-    console.log(item);
     const { Title, Text, Paragraph } = Typography;
     const placeholderImg = `https://generative-placeholders.glitch.me/image?width=150&height=150&style=tiles&colors=40`;
     
