@@ -1,6 +1,25 @@
+@import '~antd/dist/antd.dark.less';
+
 .filter-section {
-    align-items: center;
-    justify-content: center;
-    margin: auto 0;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin: auto 0;
+}
+.filter-text {
+  margin-bottom: 12px;
+}
+.filter-input {
+  width: 250px !important;
+  @media all and (min-width: @screen-md) {
+    width: 400px !important;
+  }
+
+}
+.filter-radio-group {
+  margin: 12px auto;
+}
+.search-btn {
+  width: 150px;
+  margin: 0 auto;
 }

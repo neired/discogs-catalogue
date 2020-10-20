@@ -14,7 +14,8 @@ module.exports = {
                 '@breadcrumb-separator-color': '@primary-color',
                 '@layout-header-background': '#000',
                 '@layout-header-height': '110px',
-                '@layout-header-padding': '12px'
+                '@layout-header-padding': '12px',
+                '@layout-header-color': '@primary-color'
             },
             javascriptEnabled: true,
           },
