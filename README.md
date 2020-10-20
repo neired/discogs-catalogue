@@ -1,4 +1,4 @@
-## Discogs Catalogue
+## Discogs Catalogue 🎶
 ### 🟠 What is it?
 
 Discogs is the biggest database of information about audio recordings in all formats (cassette, vinyl, CDs, etc.).
