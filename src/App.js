@@ -86,7 +86,6 @@ class App extends React.Component {
 
     const requests = this.state.searchBy.map(type => type ? fetchData(this.state.query, type) : Promise.resolve(null))
     Promise.all(requests).then(responses => {
-      console.log(responses)
       if(responses[0]) {
         if (responses[0].pagination.items === 0) {
           this.setState({ error: true, loading: false })
@@ -243,7 +242,7 @@ class App extends React.Component {
           </Content>
           <Footer className="footer">
             <Text><a href="./">Discogs Catalogue</a></Text>
-            <Text>Made with <HeartOutlined/> by <a href='https://github.com/neired'>Natalia Millán</a></Text>
+            <Text>Made with <HeartOutlined/> by <a href='https://github.com/neired' target="_blank" rel="noopener noreferrer">Natalia Millán</a></Text>
           </Footer>
         </Layout>
     )
