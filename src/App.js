@@ -166,10 +166,22 @@ class App extends React.Component {
     const { query, artists, releases, artistsPag, isCollectionLoading, loading, releasesPag, isArtist, isRelease, collection, collectionPag, error } = this.state;
     const { Header, Footer, Content } = Layout;
     const { Title, Text } = Typography;
+    const discogsArr = ['trendiest', 'coolest', 'largest', 'best'];
     return (
         <Layout className="app">
           <Header className="header">
-            <Title level={1} className="header-title"><a href="./">Discogs Catalogue</a></Title>            
+            <Title level={1} className="header-title">
+              <a href="./">Discogs Catalogue</a>
+            </Title>
+            <div className="header-container">
+              <p>The</p>
+              <ul className="header-list">
+                {discogsArr.map((item, index) => (
+                  <li key={index} className="header-list-item"> {item} </li>
+                ))}
+              </ul>         
+              <p>online music database.</p>
+            </div>
           </Header>
           <Content>
             <HashRouter>
@@ -183,9 +195,7 @@ class App extends React.Component {
                       getSearch={this.getSearch} 
                       fetchQueryData={this.fetchQueryData}
                       query={query}
-                      searchModes={this.searchModes}
-                      isArtist={isArtist}
-                      isRelease={isRelease}>
+                      searchModes={this.searchModes}>
                     </Filter>
                     {error && <Error></Error>}
                     <Spin spinning={loading} size="large"></Spin>
