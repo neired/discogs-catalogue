@@ -1,5 +1,5 @@
 ## Discogs Catalogue 🎶
-### 🟠 What is it?
+### 🔴 What is it?
 
 Discogs is the biggest database of information about audio recordings in all formats (cassette, vinyl, CDs, etc.).
 
@@ -10,7 +10,7 @@ Discogs is the biggest database of information about audio recordings in all for
 - `Collection`: it displays your own collection of records.
 - `Add to the collection`: albums can be added to your collection through a button.
 
-### 🟡 How to run
+### 🟠 How to run
 
 First run `npm install` in the command line to install all dependencies needed. 
 
@@ -18,7 +18,7 @@ Then run `npm start` to start the project in development mode and open [http://l
 
 💫  As simple as that!
 
-### 🟢 Technologies
+### 🟡 Technologies
 
 **Discogs Catalogue** has been developed with:
 - [Create React App](https://github.com/facebook/create-react-app)
@@ -33,7 +33,7 @@ Further information about the development process and organization followed in o
 - Testing
 - Publish (including final touches and publication of the page in GitHubPages)
 
-### API
+### 🟢 API
 
 The REST API from Discogs that has been used consumes the following endpoints:
 
@@ -47,7 +47,7 @@ The REST API from Discogs that has been used consumes the following endpoints:
 | POST       | /users/{username}/collection/folders/{folder_id}/releases/{release_id} | add a release to a folder in user’s collection |
 
 
-### 🔵  Testing
+### 🔵 Testing
 
 Only four basic tests regarding search usage have been implemented. Further testing is recommended.
 
